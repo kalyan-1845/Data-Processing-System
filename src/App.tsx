@@ -453,4 +453,7 @@ export function App() {
         transition={{ duration: 2, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
       >
         <AppContent />
-      </motion.div
+      </motion.div>
+    </ToastProvider>
+  );
+}
