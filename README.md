@@ -55,6 +55,14 @@ DocuShrink AI features an adaptive, ultra-fast mobile navigation system:
 
 ---
 
+## 👥 Team Members
+
+- **Bhoompally Kalyan Reddy**
+- **G. Pranathieswari**
+- **Tharuni**
+
+---
+
 ## 🛡️ License
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
