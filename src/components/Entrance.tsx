@@ -49,7 +49,7 @@ function BoltParticles({ explosionPhase, phase, isHovered }: { explosionPhase: b
 
   useFrame((state, delta) => {
     if (!meshRef.current) return;
-    const time = state.clock.getElapsedTime();
+    const time = state.performance.now() / 1000;
 
     particles.forEach((p, i) => {
       if (explosionPhase) {
@@ -109,7 +109,7 @@ function Logo3D({ explosionPhase, isHovered }: { explosionPhase: boolean, isHove
 
   useFrame((state, delta) => {
     if (groupRef.current) {
-      const time = state.clock.getElapsedTime();
+      const time = state.performance.now() / 1000;
       groupRef.current.rotation.y += delta * (isHovered ? 1.5 : 0.5);
       groupRef.current.rotation.z = Math.sin(time * 0.5) * 0.1;
 
@@ -346,7 +346,7 @@ export function Entrance({ onComplete, onPhaseChange, onHoverChange }: {
       {/* Main 3D Canvas */}
       <Canvas 
         shadows
-        gl={{ antialias: true, alpha: true, stencil: false, depth: true }}
+        gl={{ antialias: true, alpha: true, stencil: false, depth: true, shadowMapType: THREE.PCFShadowMap }}
       >
         <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
         <Scene phase={phase} setIsHovered={setIsHovered} isHovered={isHovered} />
