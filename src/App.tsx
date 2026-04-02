@@ -194,17 +194,19 @@ function AppContent() {
   }, [activeModule]);
 
   useEffect(() => {
-    localStorage.setItem('docushrink-module', activeModule);
+    try {
+      localStorage.setItem('docushrink-module', activeModule);
+    } catch(e) {}
   }, [activeModule]);
 
   useEffect(() => {
     const root = document.documentElement;
     if (darkMode) {
       root.classList.add('dark');
-      localStorage.setItem('docushrink-theme', 'dark');
+      try { localStorage.setItem('docushrink-theme', 'dark'); } catch(e) {}
     } else {
       root.classList.remove('dark');
-      localStorage.setItem('docushrink-theme', 'light');
+      try { localStorage.setItem('docushrink-theme', 'light'); } catch(e) {}
     }
   }, [darkMode]);
 
@@ -222,9 +224,9 @@ function AppContent() {
       <AnimatePresence mode="wait">
         <motion.div
           key={activeModule}
-          initial={{ opacity: 0, scale: 0.95, filter: 'blur(20px)' }}
-          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, scale: 1.05, filter: 'blur(20px)' }}
+          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="relative"
         >
@@ -420,7 +422,7 @@ export function App() {
           <motion.div
             key="entrance"
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 2, filter: 'blur(30px)' }}
+            exit={{ opacity: 0, scale: 1.5 }}
             transition={{ duration: 1.5, ease: 'easeIn' }}
             className="fixed inset-0 z-[100] bg-black"
           >
