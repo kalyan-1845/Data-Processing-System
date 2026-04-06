@@ -130,20 +130,20 @@ export function MergePdf() {
                     key={index}
                     className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-[#050505]/40 rounded-xl"
                   >
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-2">
                       <button
-                        onClick={() => moveFile(index, index - 1)}
+                        onClick={(e) => { e.stopPropagation(); moveFile(index, index - 1); }}
                         disabled={index === 0}
-                        className="p-0.5 hover:bg-slate-200 dark:hover:bg-white/10 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="p-2 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
                       >
-                        <GripVertical className="w-4 h-4 text-slate-400 rotate-90" />
+                        <GripVertical className="w-5 h-5 text-slate-400 rotate-90" />
                       </button>
                       <button
-                        onClick={() => moveFile(index, index + 1)}
+                        onClick={(e) => { e.stopPropagation(); moveFile(index, index + 1); }}
                         disabled={index === pdfFiles.length - 1}
-                        className="p-0.5 hover:bg-slate-200 dark:hover:bg-white/10 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="p-2 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
                       >
-                        <GripVertical className="w-4 h-4 text-slate-400 -rotate-90" />
+                        <GripVertical className="w-5 h-5 text-slate-400 -rotate-90" />
                       </button>
                     </div>
                     
@@ -165,10 +165,10 @@ export function MergePdf() {
                     </div>
                     
                     <button
-                      onClick={() => removeFile(index)}
-                      className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg"
+                      onClick={(e) => { e.stopPropagation(); removeFile(index); }}
+                      className="p-3 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl touch-manipulation"
                     >
-                      <Trash2 className="w-4 h-4 text-red-500" />
+                      <Trash2 className="w-5 h-5 text-red-500" />
                     </button>
                   </div>
                 ))}

@@ -121,19 +121,19 @@ export function SplitPdf() {
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setPageRange('1')}
-                  className="px-3 py-1.5 text-sm rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+                  className="px-4 py-2.5 text-sm font-medium rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors touch-manipulation"
                 >
                   First Page
                 </button>
                 <button
                   onClick={() => setPageRange(String(pdfInfo.pageCount))}
-                  className="px-3 py-1.5 text-sm rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+                  className="px-4 py-2.5 text-sm font-medium rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors touch-manipulation"
                 >
                   Last Page
                 </button>
                 <button
                   onClick={() => setPageRange(`1-${Math.ceil(pdfInfo.pageCount / 2)}`)}
-                  className="px-3 py-1.5 text-sm rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+                  className="px-4 py-2.5 text-sm font-medium rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors touch-manipulation"
                 >
                   First Half
                 </button>
@@ -144,7 +144,7 @@ export function SplitPdf() {
                       .join(',');
                     setPageRange(evens);
                   }}
-                  className="px-3 py-1.5 text-sm rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+                  className="px-4 py-2.5 text-sm font-medium rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors touch-manipulation"
                 >
                   Even Pages
                 </button>
@@ -155,7 +155,7 @@ export function SplitPdf() {
                       .join(',');
                     setPageRange(odds);
                   }}
-                  className="px-3 py-1.5 text-sm rounded-lg bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors"
+                  className="px-4 py-2.5 text-sm font-medium rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors touch-manipulation"
                 >
                   Odd Pages
                 </button>
