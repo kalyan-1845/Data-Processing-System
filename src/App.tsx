@@ -213,6 +213,8 @@ function AppContent() {
   const handleModuleChange = (module: Module) => {
     setActiveModule(module);
     setSidebarOpen(false);
+    // Presentation Polish: Always reset scroll to top on module change
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const toggleDarkMode = () => {

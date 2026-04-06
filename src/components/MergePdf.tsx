@@ -91,6 +91,7 @@ export function MergePdf() {
 
   const totalPages = pdfFiles.reduce((sum, p) => sum + p.pageCount, 0);
   const totalSize = pdfFiles.reduce((sum, p) => sum + p.file.size, 0);
+  const isTooLarge = totalSize > 150 * 1024 * 1024; // 150MB Guardrail
 
   return (
     <div className="space-y-6">
@@ -188,6 +189,15 @@ export function MergePdf() {
                   style={{ width: `${progress}%` }}
                 />
               </div>
+            </div>
+          )}
+
+          {isTooLarge && (
+            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl mb-4 flex items-start gap-3">
+              <span className="text-xl">⚠️</span>
+              <p className="text-sm text-amber-700 dark:text-amber-400 font-medium">
+                High-bandwidth Alert: Selection is over 150MB. Processing may be slow depending on your browser memory.
+              </p>
             </div>
           )}
 
