@@ -141,5 +141,13 @@ body {
   display: none;
 }
 
+/* Mobile Interaction Fixes */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
 
-/* version control incremental sync 181 */
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* version control incremental sync 182 */
