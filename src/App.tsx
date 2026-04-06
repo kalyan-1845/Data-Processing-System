@@ -313,10 +313,11 @@ function AppContent() {
             <Menu className="w-7 h-7 text-white" />
           </button>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-accent flex items-center justify-center shadow-accent shadow-lg">
-              <Zap className="w-4 h-4 text-white" />
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center relative overflow-hidden group">
+              <div className="absolute inset-0 bg-accent/20 blur-md group-hover:bg-accent/40 transition-all" />
+              <img src="/pwa-192x192.png" alt="Logo" className="w-7 h-7 relative z-10 drop-shadow-[0_0_8px_rgba(var(--accent),0.6)]" />
             </div>
-            <span className="font-bold font-outfit text-xl text-white tracking-tight">DocuShrink</span>
+            <span className="font-bold font-outfit text-xl text-white tracking-[-0.03em]">DocuShrink</span>
           </div>
           <button 
             onClick={(e) => { e.stopPropagation(); toggleDarkMode(); }} 
@@ -339,12 +340,13 @@ function AppContent() {
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-white/5 bg-gradient-to-b from-white/5 to-transparent">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center shadow-accent ring-1 ring-white/20 transition-colors duration-1000">
-                <Zap className="w-5 h-5 text-white" />
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center relative group">
+                <div className="absolute inset-0 bg-accent/25 blur-lg animate-pulse" />
+                <img src="/pwa-192x192.png" alt="Logo" className="w-9 h-9 relative z-10 drop-shadow-[0_0_12px_rgba(var(--accent),0.8)]" />
               </div>
               <div>
-                <h1 className="font-bold font-outfit text-xl text-white tracking-tight">DocuShrink</h1>
-                <p className="text-[11px] font-medium text-accent uppercase tracking-widest">Active Core</p>
+                <h1 className="font-extrabold font-outfit text-2xl text-white tracking-[-0.04em] leading-none">DocuShrink</h1>
+                <p className="text-[10px] font-bold text-accent uppercase tracking-[0.3em] mt-1 opacity-80">Neural Core v1.0</p>
               </div>
             </div>
           </div>

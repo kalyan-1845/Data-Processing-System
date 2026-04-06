@@ -1,73 +1,88 @@
-# ⚡ DocuShrink AI – Smart Cinematic Document Workspace
+# ⚡ DocuShrink AI: The Neural Document Workspace
 
-DocuShrink AI is a high-performance, cinematic document processing ecosystem that leverages advanced AI to summarize, extract, and manipulate documents in a secure, locally-optimized environment.
+> **High-Performance. 100% Private. 100% Offline.**
 
-![Cinematic Interface Preview](https://github.com/kalyan-1845/Data-Processing-System/blob/main/public/preview.png?raw=true)
-
-## 🌌 Core Features
-
-### 1. **Cinematic 3D Entrance**
-Experience a high-fidelity "Jarvis-inspired" system initialization. A multi-layered 3D logo core coalesces from 2,000 lightning particles before shattering into the main workspace.
-
-### 2. **AI-Powered Intelligence**
-*   **Neural Summarizer**: Effortlessly condense long documents into actionable intel.
-*   **Keyword Extractor**: Instantly map the thematic landscape of any text.
-*   **Question & Bullet Generators**: Transform static data into interactive study aids and summaries.
-*   **OCR Extractor**: High-precision text recognition for scanned documents.
-
-### 3. **The Secure Workspace (HUD)**
-*   **Dynamic Accent Colors**: The UI automatically transitions its theme (Violet, Emerald, Sky, Amber) based on the selected tool category.
-*   **Neural Link Activity Monitor**: Real-time visualization of "Brain Frequency" via the sidebar monitor.
-*   **Technical HUD Overlay**: Continuous system telemetry stream for a premium "High-Performance" feel.
-*   **Magnetic Background**: A gravity-based particle field that reacts to mouse movement.
+DocuShrink AI is a state-of-the-art, "Neural-Engine" powered workspace designed for secure, high-speed document processing. By leveraging **Local AI Bundling** and a **Progressive Web App (PWA)** architecture, it delivers a professional processing suite that works without an internet connection, ensuring your data never leaves your device.
 
 ---
 
-## 🛠️ Tech Stack
+## 🌌 The Power of "DocuShrink Core"
 
-- **Frontend**: [React 19](https://react.dev), [Vite](https://vitejs.dev), [Tailwind CSS 4](https://tailwindcss.com)
-- **3D Engine**: [@react-three/fiber](https://r3f.docs.pmnd.rs/getting-started/introduction) + [Three.js](https://threejs.org)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **Backend**: [Python](https://www.python.org/) (FastAPI/Flask)
-- **OCR**: [Tesseract.js](https://tesseract.projectnaptha.com/)
-- **PDF Manipulation**: [pdf-lib](https://pdf-lib.js.org/)
+### 🛡️ 100% Privacy & Offline Autonomy
+Unlike standard AI tools, DocuShrink bundles its "AI Brains" (Workers) locally.
+*   **Zero-Internet OCR**: Extract text from images in a room with no Wi-Fi.
+- **Localized PDF Engines**: Merge, Split, and Compress files instantly in your browser's RAM.
+- **PWA Mastery**: "Install" the app on your phone or laptop. It caches everything for zero-latency, offline startup.
+
+### 🧠 The Neural Engine Suite
+*   **AI Summarizer**: Extractive NLP logic to condense massive documents into actionable intel.
+*   **Keyword Intelligence**: Thematic mapping using local TF-IDF scoring.
+*   **Vision OCR**: Industrial-grade text recognition via localized Tesseract.js cores.
+*   **Inquiry Generator**: Automatically convert static text into interactive Q&A pairs.
+
+### 💎 Industrial HUD Interface
+*   **Dynamic Theme Linking**: The entire UI (Violet, Emerald, Sky, Amber) shifts its glow based on the active tool category.
+*   **3D Coalescence Entrance**: A high-fidelity initialization sequence featuring 2,000 magnetic particles.
+*   **Real-Time Telemetry**: Cinematic HUD overlays and background particle fields that react to your mouse movement.
 
 ---
 
-## ⚡ Quick Start
+## 🛠️ The Bleeding-Edge Stack
+
+| Technology | Purpose |
+| :--- | :--- |
+| **React 19** | Ultra-efficient rendering with concurrent features. |
+| **Vite 7** | Lightning-fast HMR and PWA asset bundling. |
+| **Tailwind 4** | Advanced design system and hardware-accelerated CSS. |
+| **PWA / Service Workers** | Reliable 100% offline access and "Home Screen" installation. |
+| **Tesseract.js (Local)** | Localized AI OCR Core (No Cloud API needed). |
+| **pdf-lib & jszip** | High-speed binary document manipulation. |
+
+---
+
+## ⚡ Quick-Start Installation
 
 ### 1. Requirements
-Ensure you have **Node.js** and **Python** installed on your system.
+Ensure you have **Node.js** (v18+) and **npm** installed.
 
-### 2. One-Step Setup & Start
-Run the combined start script to launch both the frontend and the AI backend simultaneously:
+### 2. Portable Installation
 ```bash
-npm run setup   # Install all dependencies (Frontend + Backend)
-npm start       # Start the full cinematic system
+# Clone the repository
+git clone https://github.com/kalyan-1845/Data-Processing-System.git
+
+# Install all professional dependencies
+npm install
+
+# Start the high-performance workspace
+npm run dev
 ```
 
----
-
-## 📱 Mobile Experience
-DocuShrink AI features an adaptive, ultra-fast mobile navigation system:
-- **Responsive Drawer**: Full-screen navigation with smart backdrop layering.
-- **Performance Optimized**: Transitions are shortened and physics are tuned for mobile processors.
-
----
-
-## 👥 Team Members
-
-- **Bhoompally Kalyan Reddy**
-- **G. Pranathieswari**
-- **Tharuni**
+### 3. Build for Production
+To generate the **Standalone Portable Build**:
+```bash
+npm run build
+```
+The resulting `/dist` folder can be hosted on **Vercel**, **Render**, or even carried on a **USB Drive** for a fully offline experience.
 
 ---
 
-## 🛡️ License
-Distributed under the **MIT License**. See `LICENSE` for more information.
+## 📱 Mobile Native Experience
+DocuShrink is optimized for the presenting professional:
+*   **"Nuclear Stacking" Layout**: High-priority z-index management ensures navigation is never "stuck" on mobile.
+*   **Touch-First Interaction**: Optimized hit targets and `onPointerDown` handlers for zero lag.
+*   **Standalone Mode**: Add to Home Screen (PWA) removes browser bars for a true native app feel.
+
+---
+
+## 👥 The Neural Core Team
+
+- **Bhoompally Kalyan Reddy** — *Lead Architecture & PWA Strategy*
+- **G. Pranathieswari** — *UI/UX Design & Branding*
+- **Tharuni** — *Backend & Logic Integration*
 
 ---
 
 <div align="center">
-  <p>Built for the next generation of AI-driven productivity.</p>
+  <p><b>DocuShrink AI</b> – Engineered for the next generation of private productivity.</p>
 </div>
+
