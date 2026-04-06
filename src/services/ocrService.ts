@@ -22,6 +22,9 @@ export async function performOcr(
     onProgress?.({ status: 'Loading OCR engine...', progress: 0 });
     
     const result = await Tesseract.recognize(file, language, {
+      workerPath: '/tesseract/worker.min.js',
+      corePath: '/tesseract/tesseract-core-simd.wasm.js',
+      langPath: '/tesseract',
       logger: (m) => {
         if (m.status && m.progress !== undefined) {
           let statusText = m.status;
