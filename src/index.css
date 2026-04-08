@@ -183,6 +183,29 @@ body {
   display: none;
 }
 
+.pencil-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #eab308 transparent;
+}
+
+.pencil-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pencil-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pencil-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #f472b6 10%, #eab308 10%, #eab308 90%, #1e293b 90%);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pencil-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #ec4899 10%, #f59e0b 10%, #f59e0b 90%, #0f172a 90%);
+}
+
 /* Mobile Interaction Fixes */
 * {
   -webkit-tap-highlight-color: transparent;

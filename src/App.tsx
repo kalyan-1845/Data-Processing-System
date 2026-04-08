@@ -261,6 +261,19 @@ function AppContent() {
     }
   }, [darkMode]);
 
+  const navRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    const activeRef = navRefs.current[activeModule];
+    if (activeRef) {
+      activeRef.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'start',
+      });
+    }
+  }, [activeModule]);
+
   const handleModuleChange = (module: Module) => {
     setActiveModule(module);
     setSidebarOpen(false);
@@ -402,13 +415,14 @@ function AppContent() {
             </div>
           </div>
 
-          <nav className="flex-1 overflow-y-auto p-4 space-y-8 scrollbar-hide">
+          <nav className="flex-1 overflow-y-auto p-4 space-y-8 pencil-scrollbar">
             <div>
               <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-3 px-3">AI Engines</p>
               <div className="space-y-1">
                 {aiItems.map((item) => (
                   <button
                     key={item.id}
+                    ref={(el) => (navRefs.current[item.id] = el)}
                     onPointerDown={(e) => { e.stopPropagation(); handleModuleChange(item.id); }}
                     onClick={(e) => { e.stopPropagation(); handleModuleChange(item.id); }}
                     className={cn(
@@ -442,6 +456,7 @@ function AppContent() {
                 {documentItems.map((item) => (
                   <button
                     key={item.id}
+                    ref={(el) => (navRefs.current[item.id] = el)}
                     onPointerDown={(e) => { e.stopPropagation(); handleModuleChange(item.id); }}
                     onClick={(e) => { e.stopPropagation(); handleModuleChange(item.id); }}
                     className={cn(
