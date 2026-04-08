@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { ToastProvider } from '@/ui/Toast';
 import { Summarizer } from '@/components/Summarizer';
 import { KeywordExtractor } from '@/components/KeywordExtractor';
@@ -30,6 +30,8 @@ import {
   Sun,
   Zap,
 } from 'lucide-react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 
 type Module =
   | 'summarizer'
@@ -69,6 +71,55 @@ const categoryColors: Record<string, string> = {
   merge: '14 165 233',    // Sky
   ocr: '245 158 11',      // Amber
 };
+
+function Pencil3D() {
+  const meshRef = useRef<THREE.Group>(null);
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += 0.02;
+      meshRef.current.rotation.x = Math.sin(state.clock.getElapsedTime()) * 0.2;
+      meshRef.current.position.y = Math.sin(state.clock.getElapsedTime() * 2) * 0.05;
+    }
+  });
+
+  return (
+    <group ref={meshRef} scale={1.5} rotation={[0, 0, Math.PI / 4]}>
+      {/* Main Body - Hexagonal yellow cylinder */}
+      <mesh position={[0, 0, 0]}>
+        <cylinderGeometry args={[0.2, 0.2, 2.0, 6]} />
+        <meshStandardMaterial color="#eab308" roughness={0.3} metalness={0.2} />
+      </mesh>
+      
+      {/* Wood Tip - Conical */}
+      <mesh position={[0, -1.25, 0]}>
+        <coneGeometry args={[0.2, 0.5, 6]} />
+        <meshStandardMaterial color="#fde047" />
+      </mesh>
+      
+      {/* Graphite Lead - Small conical point */}
+      <mesh position={[0, -1.5, 0]}>
+        <coneGeometry args={[0.06, 0.12, 6]} />
+        <meshStandardMaterial color="#1e293b" />
+      </mesh>
+      
+      {/* Eraser - Pink top */}
+      <mesh position={[0, 1.15, 0]}>
+        <cylinderGeometry args={[0.2, 0.2, 0.3, 12]} />
+        <meshStandardMaterial color="#f472b6" roughness={0.5} />
+      </mesh>
+      
+      {/* Metal Ferrule - Silver connector */}
+      <mesh position={[0, 0.9, 0]}>
+        <cylinderGeometry args={[0.21, 0.21, 0.2, 12]} />
+        <meshStandardMaterial color="#94a3b8" metalness={0.8} roughness={0.2} />
+      </mesh>
+
+      <ambientLight intensity={1.5} />
+      <pointLight position={[2, 2, 2]} intensity={5} color="white" />
+    </group>
+  );
+}
 
 function NeuralMonitor() {
   const bars = useMemo(() => [...Array(15)].map((_, i) => ({
@@ -366,7 +417,17 @@ function AppContent() {
                     )}
                   >
                     {activeModule === item.id && (
-                      <motion.div layoutId="activeNav" className="absolute inset-0 bg-accent rounded-xl shadow-accent border border-white/10" />
+                      <div className="absolute inset-0 z-0">
+                        <motion.div 
+                          layoutId="activeNav" 
+                          className="absolute inset-0 bg-accent rounded-xl shadow-accent border border-white/10" 
+                        />
+                        <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-12 h-12 pointer-events-none hidden lg:block">
+                          <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
+                            <Pencil3D />
+                          </Canvas>
+                        </div>
+                      </div>
                     )}
                     <item.icon className={cn('w-6 h-6 relative z-10', activeModule === item.id ? 'text-white' : '')} />
                     <span className="text-base font-medium relative z-10">{item.label}</span>
@@ -389,7 +450,17 @@ function AppContent() {
                     )}
                   >
                     {activeModule === item.id && (
-                      <motion.div layoutId="activeNav" className="absolute inset-0 bg-accent rounded-xl shadow-accent border border-white/10" />
+                      <div className="absolute inset-0 z-0">
+                        <motion.div 
+                          layoutId="activeNav" 
+                          className="absolute inset-0 bg-accent rounded-xl shadow-accent border border-white/10" 
+                        />
+                        <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-12 h-12 pointer-events-none hidden lg:block">
+                          <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
+                            <Pencil3D />
+                          </Canvas>
+                        </div>
+                      </div>
                     )}
                     <item.icon className={cn('w-6 h-6 relative z-10', activeModule === item.id ? 'text-white' : '')} />
                     <span className="text-base font-medium relative z-10">{item.label}</span>
