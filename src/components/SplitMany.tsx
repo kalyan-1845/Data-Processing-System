@@ -208,5 +208,5 @@ export function SplitMany() {
         </div>
       }
     />
-  );
-
+   );
+}

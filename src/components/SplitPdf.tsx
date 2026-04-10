@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dropzone } from '@/ui/Dropzone';
 import { Button } from '@/ui/Button';
 import { useToast } from '@/ui/Toast';
-import { Scissors, FileText, Info, Sparkles } from 'lucide-react';
+import { Scissors, FileText, Info } from 'lucide-react';
 import { splitPdf, getPdfInfo, parsePageRange } from '@/services/pdfService';
 import { saveAs } from 'file-saver';
 import { ToolWrapper } from '@/ui/ToolWrapper';
@@ -203,5 +203,5 @@ export function SplitPdf() {
         </div>
       }
     />
-  );
-
+   );
+}

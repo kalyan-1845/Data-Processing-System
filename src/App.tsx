@@ -408,6 +408,8 @@ function AppContent() {
                 <span className="text-base font-medium relative z-10">Dashboard</span>
               </button>
             </div>
+
+            <div>
               <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-3 px-3">AI Engines</p>
               <div className="space-y-1">
                 {aiItems.map((item) => (
@@ -447,7 +449,7 @@ function AppContent() {
                 {documentItems.map((item) => (
                   <button
                     key={item.id}
-                    ref={(el) => (navRefs.current[item.id] = el)}
+                    ref={(el) => { navRefs.current[item.id] = el; }}
                     onPointerDown={(e) => { e.stopPropagation(); handleModuleChange(item.id); }}
                     onClick={(e) => { e.stopPropagation(); handleModuleChange(item.id); }}
                     className={cn(
