@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import { ToastProvider } from '@/ui/Toast';
 import { ErrorBoundary } from '@/ui/ErrorBoundary';
+import { CustomCursor } from '@/ui/CustomCursor';
 import { Entrance } from '@/components/Entrance';
 import { Dashboard } from '@/components/Dashboard';
 import { NeuralParticles } from '@/ui/particles';
@@ -539,6 +540,7 @@ export function App() {
 
   return (
     <ToastProvider>
+      <CustomCursor />
       <AnimatePresence>
         {!entered && (
           <motion.div
