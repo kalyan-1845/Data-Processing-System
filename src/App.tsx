@@ -29,7 +29,6 @@ import {
   Menu,
   Moon,
   Sun,
-  Zap,
 } from 'lucide-react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -383,7 +382,6 @@ function AppContent() {
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center relative group">
                 <div className="absolute inset-0 bg-accent/25 blur-lg animate-pulse" />
                 <img src="/pwa-192x192.png" alt="Logo" className="w-9 h-9 relative z-10 drop-shadow-[0_0_12px_rgba(var(--accent),0.8)]" />
-              </div>
               </div>
               <div>
                 <h1 className="font-extrabold font-outfit text-2xl text-white tracking-[-0.04em] leading-none">DocuShrink</h1>

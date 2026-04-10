@@ -236,7 +236,7 @@ export function MergePdf() {
                     </div>
                     
                     <div className="space-y-2 opacity-60">
-                      {pdfFiles.slice(0, 5).map((pdf, i) => (
+                      {pdfFiles.slice(0, 5).map((pdf, _i) => (
                         <div key={pdf.id} className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                           <p className="text-[10px] font-medium text-slate-500 dark:text-white/40 truncate">{pdf.file.name}</p>

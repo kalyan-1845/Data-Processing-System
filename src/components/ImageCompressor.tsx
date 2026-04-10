@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dropzone } from '@/ui/Dropzone';
 import { Button } from '@/ui/Button';
 import { useToast } from '@/ui/Toast';
-import { ImageDown, Eye, Target, AlertCircle, ArrowRight, Sparkles } from 'lucide-react';
+import { ImageDown, Target, AlertCircle } from 'lucide-react';
 import { compressImage, CompressionResult } from '@/services/imageService';
 import { saveAs } from 'file-saver';
 import { ToolWrapper } from '@/ui/ToolWrapper';
