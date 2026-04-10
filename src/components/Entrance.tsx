@@ -47,7 +47,7 @@ function BoltParticles({ explosionPhase, phase, isHovered }: { explosionPhase: b
     return temp;
   }, []);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (!meshRef.current) return;
     const time = performance.now() / 1000;
 
@@ -107,7 +107,7 @@ function Logo3D({ explosionPhase, isHovered }: { explosionPhase: boolean, isHove
     return shape;
   }, []);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (groupRef.current) {
       const time = performance.now() / 1000;
       groupRef.current.rotation.y += delta * (isHovered ? 1.5 : 0.5);

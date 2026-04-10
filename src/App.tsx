@@ -1,19 +1,22 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import { ToastProvider } from '@/ui/Toast';
-import { Summarizer } from '@/components/Summarizer';
-import { KeywordExtractor } from '@/components/KeywordExtractor';
-import { QuestionGenerator } from '@/components/QuestionGenerator';
-import { BulletGenerator } from '@/components/BulletGenerator';
-import { OCR } from '@/components/OCR';
-import { PdfCompressor } from '@/components/PdfCompressor';
-import { ImageCompressor } from '@/components/ImageCompressor';
-import { SplitPdf } from '@/components/SplitPdf';
-import { SplitMany } from '@/components/SplitMany';
-import { MergePdf } from '@/components/MergePdf';
+import { ErrorBoundary } from '@/ui/ErrorBoundary';
 import { Entrance } from '@/components/Entrance';
 import { Dashboard } from '@/components/Dashboard';
 import { NeuralParticles } from '@/ui/particles';
 import { cn } from '@/utils/cn';
+
+// Lazy-load all tool modules for code-splitting
+const Summarizer = lazy(() => import('@/components/Summarizer').then(m => ({ default: m.Summarizer })));
+const KeywordExtractor = lazy(() => import('@/components/KeywordExtractor').then(m => ({ default: m.KeywordExtractor })));
+const QuestionGenerator = lazy(() => import('@/components/QuestionGenerator').then(m => ({ default: m.QuestionGenerator })));
+const BulletGenerator = lazy(() => import('@/components/BulletGenerator').then(m => ({ default: m.BulletGenerator })));
+const OCR = lazy(() => import('@/components/OCR').then(m => ({ default: m.OCR })));
+const PdfCompressor = lazy(() => import('@/components/PdfCompressor').then(m => ({ default: m.PdfCompressor })));
+const ImageCompressor = lazy(() => import('@/components/ImageCompressor').then(m => ({ default: m.ImageCompressor })));
+const SplitPdf = lazy(() => import('@/components/SplitPdf').then(m => ({ default: m.SplitPdf })));
+const SplitMany = lazy(() => import('@/components/SplitMany').then(m => ({ default: m.SplitMany })));
+const MergePdf = lazy(() => import('@/components/MergePdf').then(m => ({ default: m.MergePdf })));
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Sparkles,
@@ -54,15 +57,15 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: 'summarizer', label: 'AI Summarizer', icon: Sparkles, category: 'ai' },
-  { id: 'keywords', label: 'Keyword Extractor', icon: Tag, category: 'ai' },
-  { id: 'questions', label: 'Question Generator', icon: HelpCircle, category: 'ai' },
-  { id: 'bullets', label: 'Bullet Generator', icon: List, category: 'ai' },
-  { id: 'ocr', label: 'OCR Extractor', icon: ScanText, category: 'ai' },
-  { id: 'pdf-compress', label: 'PDF Compressor', icon: FileDown, category: 'document' },
-  { id: 'image-compress', label: 'Image Compressor', icon: ImageDown, category: 'document' },
+  { id: 'summarizer', label: 'Summarizer', icon: Sparkles, category: 'ai' },
+  { id: 'keywords', label: 'Keywords', icon: Tag, category: 'ai' },
+  { id: 'questions', label: 'Questions', icon: HelpCircle, category: 'ai' },
+  { id: 'bullets', label: 'Bullet Points', icon: List, category: 'ai' },
+  { id: 'ocr', label: 'OCR Extract', icon: ScanText, category: 'ai' },
+  { id: 'pdf-compress', label: 'PDF Compress', icon: FileDown, category: 'document' },
+  { id: 'image-compress', label: 'Image Compress', icon: ImageDown, category: 'document' },
   { id: 'split-pdf', label: 'Split & Extract', icon: Scissors, category: 'document' },
-  { id: 'split-many', label: 'One → Many PDFs', icon: FileStack, category: 'document' },
+  { id: 'split-many', label: 'Batch Split', icon: FileStack, category: 'document' },
   { id: 'merge-pdf', label: 'Merge PDFs', icon: Combine, category: 'document' },
 ];
 
@@ -297,22 +300,35 @@ function AppContent() {
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="relative"
         >
-          {(() => {
-            switch (activeModule) {
-              case 'summarizer': return <Summarizer />;
-              case 'keywords': return <KeywordExtractor />;
-              case 'questions': return <QuestionGenerator />;
-              case 'bullets': return <BulletGenerator />;
-              case 'ocr': return <OCR />;
-              case 'pdf-compress': return <PdfCompressor />;
-              case 'image-compress': return <ImageCompressor />;
-              case 'split-pdf': return <SplitPdf />;
-              case 'split-many': return <SplitMany />;
-              case 'merge-pdf': return <MergePdf />;
-              case 'dashboard': return <Dashboard onSelectModule={handleModuleChange} />;
-              default: return <Dashboard onSelectModule={handleModuleChange} />;
-            }
-          })()}
+          <Suspense fallback={
+            <div className="min-h-[400px] flex items-center justify-center">
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-accent/20 flex items-center justify-center animate-pulse">
+                  <div className="w-6 h-6 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+                </div>
+                <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Loading Module</p>
+              </div>
+            </div>
+          }>
+            <ErrorBoundary moduleName={navItems.find(i => i.id === activeModule)?.label || 'Tool'}>
+              {(() => {
+                switch (activeModule) {
+                  case 'summarizer': return <Summarizer />;
+                  case 'keywords': return <KeywordExtractor />;
+                  case 'questions': return <QuestionGenerator />;
+                  case 'bullets': return <BulletGenerator />;
+                  case 'ocr': return <OCR />;
+                  case 'pdf-compress': return <PdfCompressor />;
+                  case 'image-compress': return <ImageCompressor />;
+                  case 'split-pdf': return <SplitPdf />;
+                  case 'split-many': return <SplitMany />;
+                  case 'merge-pdf': return <MergePdf />;
+                  case 'dashboard': return <Dashboard onSelectModule={handleModuleChange} />;
+                  default: return <Dashboard onSelectModule={handleModuleChange} />;
+                }
+              })()}
+            </ErrorBoundary>
+          </Suspense>
         </motion.div>
       </AnimatePresence>
     );
@@ -507,9 +523,17 @@ function AppContent() {
 }
 
 export function App() {
-  const [entered, setEntered] = useState(false);
+  const [entered, setEntered] = useState(() => {
+    // Skip entrance for returning users in the same session
+    return sessionStorage.getItem('docushrink-entered') === 'true';
+  });
   const [phase, setPhase] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+
+  const handleEntranceComplete = () => {
+    setEntered(true);
+    try { sessionStorage.setItem('docushrink-entered', 'true'); } catch(_e) {/* */}
+  };
 
   return (
     <ToastProvider>
@@ -523,7 +547,7 @@ export function App() {
             className="fixed inset-0 z-[100] bg-black"
           >
             <Entrance 
-              onComplete={() => setEntered(true)} 
+              onComplete={handleEntranceComplete} 
               onPhaseChange={setPhase}
               onHoverChange={setIsHovered}
             />
