@@ -2,9 +2,12 @@ import { useState, useCallback } from 'react';
 import { Dropzone } from '@/ui/Dropzone';
 import { Button } from '@/ui/Button';
 import { useToast } from '@/ui/Toast';
-import { Combine, Download, FileText, GripVertical, Trash2 } from 'lucide-react';
+import { Combine, Trash2, ArrowUp, ArrowDown, Sparkles, Files } from 'lucide-react';
 import { mergePdfs, getPdfInfo } from '@/services/pdfService';
 import { saveAs } from 'file-saver';
+import { ToolWrapper } from '@/ui/ToolWrapper';
+import { OutputCard } from '@/ui/OutputCard';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface PdfFile {
   file: File;
@@ -17,7 +20,7 @@ export function MergePdf() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<Blob | null>(null);
-  const [dropzoneKey, setDropzoneKey] = useState(0); // Force reset dropzone
+  const [dropzoneKey, setDropzoneKey] = useState(0);
   const { showToast } = useToast();
 
   const handleFilesChange = useCallback(async (files: File[]) => {
@@ -44,7 +47,6 @@ export function MergePdf() {
     
     setPdfFiles((prev) => [...prev, ...newPdfFiles]);
     setResult(null);
-    // Reset dropzone to clear its internal state
     setDropzoneKey(k => k + 1);
   }, []);
 
@@ -75,7 +77,7 @@ export function MergePdf() {
       const files = pdfFiles.map((p) => p.file);
       const merged = await mergePdfs(files, (p) => setProgress(p));
       setResult(merged);
-      showToast('success', 'PDFs merged successfully!');
+      showToast('success', 'Neural merging complete!');
     } catch {
       showToast('error', 'Failed to merge PDFs');
     } finally {
@@ -85,196 +87,212 @@ export function MergePdf() {
 
   const downloadMerged = () => {
     if (result) {
-      saveAs(result, 'merged.pdf');
+      saveAs(result, 'merged_document.pdf');
     }
   };
 
   const totalPages = pdfFiles.reduce((sum, p) => sum + p.pageCount, 0);
   const totalSize = pdfFiles.reduce((sum, p) => sum + p.file.size, 0);
-  const isTooLarge = totalSize > 150 * 1024 * 1024; // 150MB Guardrail
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-blue-900/30">
-          <Combine className="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Merge PDFs</h2>
-          <p className="text-slate-500 dark:text-white/60">Combine multiple PDFs into one</p>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
+    <ToolWrapper
+      title="Neural PDF Merger"
+      description="Seamlessly unify multiple document streams into a single cohesive payload"
+      icon={Combine}
+      loading={loading}
+      accentColor="blue"
+      main={
+        <div className="space-y-6">
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
             <Dropzone
               key={dropzoneKey}
               accept={{ 'application/pdf': ['.pdf'] }}
               onFilesChange={handleFilesChange}
               multiple
               maxFiles={20}
-              label="Drop PDF files here (multiple)"
+              label="Drop multiple PDF files here"
               icon="pdf"
               value={[]}
             />
           </div>
 
-          {pdfFiles.length > 0 && (
-            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
-              <h4 className="text-sm font-medium text-slate-700 dark:text-white/80 mb-3">
-                Files to merge ({pdfFiles.length})
-              </h4>
-              <div className="space-y-2 max-h-64 overflow-y-auto">
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
+            <div className="flex justify-between items-center mb-6">
+              <label className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest flex items-center gap-2">
+                <Files className="w-4 h-4 text-blue-500" />
+                Input Stack ({pdfFiles.length})
+              </label>
+              {pdfFiles.length > 0 && (
+                <button 
+                  onClick={() => setPdfFiles([])}
+                  className="text-[10px] font-bold text-red-500/60 uppercase hover:text-red-500 transition-colors tracking-tighter"
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
+
+            <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+              <AnimatePresence initial={false}>
                 {pdfFiles.map((pdf, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-[#050505]/40 rounded-xl"
+                  <motion.div
+                    key={pdf.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="group flex items-center gap-4 p-4 bg-white/50 dark:bg-white/5 rounded-2xl border border-white/5 hover:border-blue-500/30 transition-all"
                   >
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1">
                       <button
-                        onClick={(e) => { e.stopPropagation(); moveFile(index, index - 1); }}
+                        onClick={() => moveFile(index, index - 1)}
                         disabled={index === 0}
-                        className="p-2 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
+                        className="p-1.5 hover:bg-blue-500/10 rounded-lg text-slate-400 hover:text-blue-500 disabled:opacity-10 touch-manipulation"
                       >
-                        <GripVertical className="w-5 h-5 text-slate-400 rotate-90" />
+                        <ArrowUp className="w-3 h-3" />
                       </button>
                       <button
-                        onClick={(e) => { e.stopPropagation(); moveFile(index, index + 1); }}
+                        onClick={() => moveFile(index, index + 1)}
                         disabled={index === pdfFiles.length - 1}
-                        className="p-2 hover:bg-slate-200 dark:hover:bg-white/10 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
+                        className="p-1.5 hover:bg-blue-500/10 rounded-lg text-slate-400 hover:text-blue-500 disabled:opacity-10 touch-manipulation"
                       >
-                        <GripVertical className="w-5 h-5 text-slate-400 -rotate-90" />
+                        <ArrowDown className="w-3 h-3" />
                       </button>
                     </div>
-                    
-                    <span className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400">
+
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-xs font-black text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
                       {index + 1}
-                    </span>
-                    
-                    <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0">
-                      <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     </div>
-                    
-                    <div className="flex-1 overflow-hidden">
-                      <p className="text-sm font-medium text-slate-700 dark:text-white/80 truncate">
+
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-slate-700 dark:text-white/80 truncate mb-0.5">
                         {pdf.file.name}
                       </p>
-                      <p className="text-xs text-slate-500">
-                        {pdf.pageCount} pages • {(pdf.file.size / 1024).toFixed(1)} KB
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                          {pdf.pageCount} Pages
+                        </span>
+                        <div className="w-1 h-1 rounded-full bg-slate-300 dark:bg-white/10" />
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                          {(pdf.file.size / 1024).toFixed(1)} KB
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => removeFile(index)}
+                      className="p-2.5 hover:bg-red-500/10 rounded-xl text-slate-300 hover:text-red-500 transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              
+              {pdfFiles.length === 0 && (
+                <div className="h-32 flex items-center justify-center border-2 border-dashed border-white/5 rounded-3xl">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Stack Empty</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <Button 
+            onClick={handleMerge} 
+            loading={loading} 
+            disabled={pdfFiles.length < 2} 
+            className="w-full h-14 rounded-2xl text-lg font-bold" 
+            size="lg"
+          >
+            <Combine className="w-5 h-5 mr-2" />
+            Initialize Neural Merge
+          </Button>
+        </div>
+      }
+      sidebar={
+        <div className="space-y-6">
+          <OutputCard
+            title="Unity Prediction"
+            icon={Combine}
+            content={
+              pdfFiles.length > 0 ? (
+                <div className="space-y-8">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="glass rounded-2xl p-5 border-white/5 text-center">
+                      <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-1">Source Nodes</p>
+                      <p className="text-2xl font-black text-slate-700 dark:text-white/80">{pdfFiles.length}</p>
+                      <p className="text-[10px] text-slate-500 font-bold">PDF Units</p>
+                    </div>
+                    <div className="glass rounded-2xl p-5 border-blue-500/10 text-center">
+                      <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Total Pages</p>
+                      <p className="text-2xl font-black text-blue-600 dark:text-blue-400">{totalPages}</p>
+                      <p className="text-[10px] text-blue-500/60 font-bold">In Target</p>
+                    </div>
+                  </div>
+
+                  <div className="glass rounded-2xl p-6 border-white/5 bg-blue-500/5">
+                    <div className="flex justify-between items-center mb-4">
+                      <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest">Target Payload</p>
+                      <span className="text-[10px] font-black text-blue-500">{(totalSize / 1024).toFixed(1)} KB</span>
                     </div>
                     
-                    <button
-                      onClick={(e) => { e.stopPropagation(); removeFile(index); }}
-                      className="p-3 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl touch-manipulation"
-                    >
-                      <Trash2 className="w-5 h-5 text-red-500" />
-                    </button>
+                    <div className="space-y-2 opacity-60">
+                      {pdfFiles.slice(0, 5).map((pdf, i) => (
+                        <div key={pdf.id} className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                          <p className="text-[10px] font-medium text-slate-500 dark:text-white/40 truncate">{pdf.file.name}</p>
+                        </div>
+                      ))}
+                      {pdfFiles.length > 5 && (
+                        <p className="text-[10px] font-bold text-slate-400 italic pl-3">+{pdfFiles.length - 5} more segments...</p>
+                      )}
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
+
+                  {totalSize > 100 * 1024 * 1024 && (
+                    <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                      <p className="text-[10px] text-amber-600 dark:text-amber-400 leading-relaxed font-bold uppercase">
+                        Heavy Payload: Optimization may take longer.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : null
+            }
+            onDownload={downloadMerged}
+            empty={!result}
+            emptyText="Construct your input stack to see the unity prediction and final payload metrics."
+          />
 
           {loading && (
-            <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4">
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-blue-700 dark:text-blue-300">Merging PDFs...</span>
-                <span className="text-blue-600 dark:text-blue-400">{Math.round(progress)}%</span>
+            <div className="glass rounded-[2rem] p-6 animate-in bg-blue-500/5 border-blue-500/10">
+              <div className="flex justify-between items-end mb-4">
+                <div>
+                  <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Status</p>
+                  <p className="text-sm font-bold text-slate-700 dark:text-white">Synthesizing...</p>
+                </div>
+                <p className="text-2xl font-black text-blue-500">{Math.round(progress)}%</p>
               </div>
-              <div className="w-full h-2 bg-blue-200 dark:bg-blue-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300"
-                  style={{ width: `${progress}%` }}
+              <div className="w-full h-2 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-500"
                 />
               </div>
             </div>
           )}
 
-          {isTooLarge && (
-            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl mb-4 flex items-start gap-3">
-              <span className="text-xl">⚠️</span>
-              <p className="text-sm text-amber-700 dark:text-amber-400 font-medium">
-                High-bandwidth Alert: Selection is over 150MB. Processing may be slow depending on your browser memory.
-              </p>
-            </div>
-          )}
-
-          <Button onClick={handleMerge} loading={loading} disabled={pdfFiles.length < 2} className="w-full" size="lg">
-            <Combine className="w-5 h-5" />
-            Merge PDFs
-          </Button>
+          <div className="glass rounded-[2rem] p-6">
+            <h4 className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <Sparkles className="w-3 h-3" />
+              Unity Logic
+            </h4>
+            <p className="text-[10px] text-slate-500 dark:text-white/40 leading-relaxed font-medium">
+              "Files are woven together in the exact order shown in the stack. Use the arrows to recompute the document hierarchy."
+            </p>
+          </div>
         </div>
-
-        <div className="space-y-4">
-          {pdfFiles.length > 0 && (
-            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-6">
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-4">Merge Preview</h3>
-              
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4 text-center">
-                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{pdfFiles.length}</p>
-                  <p className="text-xs text-slate-500 dark:text-white/60">PDFs to merge</p>
-                </div>
-                <div className="bg-indigo-50 dark:bg-indigo-900/30 rounded-xl p-4 text-center">
-                  <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{totalPages}</p>
-                  <p className="text-xs text-slate-500 dark:text-white/60">Total pages</p>
-                </div>
-              </div>
-
-              <div className="bg-slate-50 dark:bg-[#050505]/40 rounded-xl p-4 mb-6">
-                <p className="text-sm text-slate-500 dark:text-white/60 mb-2">Merge Order:</p>
-                <div className="flex flex-wrap gap-1">
-                  {pdfFiles.map((pdf, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 bg-white dark:bg-white/5 rounded text-xs text-slate-600 dark:text-white/60 border border-slate-200 dark:border-white/10 flex items-center gap-1"
-                    >
-                      <span className="w-4 h-4 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px]">
-                        {index + 1}
-                      </span>
-                      {pdf.file.name.slice(0, 10)}...
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="text-sm text-slate-500 dark:text-white/60">
-                Estimated size: {(totalSize / 1024).toFixed(1)} KB
-              </div>
-            </div>
-          )}
-
-          {result && (
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl border border-blue-200 dark:border-blue-800 p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center">
-                  <Combine className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold text-slate-900 dark:text-white">merged.pdf</p>
-                  <p className="text-sm text-slate-500">{(result.size / 1024).toFixed(1)} KB</p>
-                </div>
-              </div>
-
-              <Button onClick={downloadMerged} className="w-full" size="lg">
-                <Download className="w-5 h-5" />
-                Download Merged PDF
-              </Button>
-            </div>
-          )}
-
-          {pdfFiles.length === 0 && !result && (
-            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-6 min-h-[300px] flex items-center justify-center">
-              <div className="text-center text-slate-400">
-                <Combine className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                <p>Upload multiple PDFs to merge</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+      }
+    />
   );
-}
+

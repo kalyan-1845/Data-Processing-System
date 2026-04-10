@@ -292,42 +292,12 @@ function AppContent() {
       <AnimatePresence mode="wait">
         <motion.div
           key={activeModule}
-          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+          initial={{ opacity: 0, scale: 0.98, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: -10 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          exit={{ opacity: 0, scale: 0.98, y: -10 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="relative"
         >
-          <AnimatePresence mode="wait">
-            {activeModule !== 'dashboard' && (
-              <motion.div
-                key={`loader-${activeModule}`}
-                initial={{ opacity: 1 }}
-                animate={{ opacity: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-                className="absolute inset-0 z-[30] flex items-center justify-center bg-[#020202]/80 backdrop-blur-2xl pointer-events-none rounded-[2rem]"
-              >
-                <div className="flex flex-col items-center gap-6">
-                    <motion.div 
-                        initial={{ scale: 0.5, rotate: -180, opacity: 0 }}
-                        animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                        className="w-20 h-20 rounded-2xl bg-accent flex items-center justify-center shadow-accent ring-1 ring-white/20"
-                    >
-                        <motion.div animate={{ opacity: [1, 0.5, 1], scale: [1, 1.2, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
-                            <Zap className="w-10 h-10 text-white fill-white" />
-                        </motion.div>
-                    </motion.div>
-                    <div className="flex flex-col items-center gap-2 text-center">
-                        <span className="text-[10px] font-bold text-accent uppercase tracking-[0.5em]">Loading Module</span>
-                        <h3 className="text-white font-outfit text-lg font-medium">
-                          {navItems.find(i => i.id === activeModule)?.label}
-                        </h3>
-                    </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           {(() => {
             switch (activeModule) {
               case 'summarizer': return <Summarizer />;
@@ -348,6 +318,7 @@ function AppContent() {
       </AnimatePresence>
     );
   };
+
 
   const aiItems = navItems.filter((item) => item.category === 'ai');
   const documentItems = navItems.filter((item) => item.category === 'document');
@@ -442,7 +413,7 @@ function AppContent() {
                 {aiItems.map((item) => (
                   <button
                     key={item.id}
-                    ref={(el) => (navRefs.current[item.id] = el)}
+                    ref={(el) => { navRefs.current[item.id] = el; }}
                     onPointerDown={(e) => { e.stopPropagation(); handleModuleChange(item.id); }}
                     onClick={(e) => { e.stopPropagation(); handleModuleChange(item.id); }}
                     className={cn(

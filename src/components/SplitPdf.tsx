@@ -204,6 +204,4 @@ export function SplitPdf() {
       }
     />
   );
-}
-  );
-}
+

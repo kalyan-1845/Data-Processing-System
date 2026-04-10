@@ -209,6 +209,4 @@ export function SplitMany() {
       }
     />
   );
-}
-  );
-}
+

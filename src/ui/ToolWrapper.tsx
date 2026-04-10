@@ -8,7 +8,7 @@ interface ToolWrapperProps {
   icon: any;
   loading?: boolean;
   accentColor?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   sidebar?: React.ReactNode;
   main?: React.ReactNode;
 }
