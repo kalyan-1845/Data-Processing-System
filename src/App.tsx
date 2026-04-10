@@ -406,7 +406,7 @@ function AppContent() {
             </div>
           </div>
 
-          <nav className="flex-1 overflow-y-auto p-4 space-y-8 pencil-scrollbar">
+          <nav aria-label="Main navigation" className="flex-1 overflow-y-auto p-4 space-y-8 pencil-scrollbar">
             <div>
               <button
                 onClick={() => handleModuleChange('dashboard')}
@@ -436,6 +436,7 @@ function AppContent() {
                       'group relative w-full flex items-center gap-4 px-4 py-4 rounded-xl transition-all duration-300 active:scale-[0.98] touch-manipulation',
                       activeModule === item.id ? 'text-white' : 'text-white/40 hover:text-white'
                     )}
+                    aria-current={activeModule === item.id ? 'page' : undefined}
                   >
                     {activeModule === item.id && (
                       <div className="absolute inset-0 z-0">
@@ -497,6 +498,7 @@ function AppContent() {
           <div className="p-4 border-t border-white/5 space-y-3">
             <button 
               onClick={(e) => { e.stopPropagation(); toggleDarkMode(); }}
+              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
               className="w-full flex items-center justify-between px-4 py-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-all touch-manipulation cursor-pointer"
             >
               <div className="flex items-center gap-3">
