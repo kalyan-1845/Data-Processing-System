@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Dropzone } from '@/ui/Dropzone';
 import { Button } from '@/ui/Button';
 import { useToast } from '@/ui/Toast';
-import { Scissors, Download, FileText, Info } from 'lucide-react';
+import { Scissors, FileText, Info, Sparkles } from 'lucide-react';
 import { splitPdf, getPdfInfo, parsePageRange } from '@/services/pdfService';
 import { saveAs } from 'file-saver';
+import { ToolWrapper } from '@/ui/ToolWrapper';
+import { OutputCard } from '@/ui/OutputCard';
 
 export function SplitPdf() {
   const [files, setFiles] = useState<File[]>([]);
@@ -59,26 +61,21 @@ export function SplitPdf() {
 
   const downloadResult = () => {
     if (result) {
-      const fileName = files[0].name.replace('.pdf', `_pages_${pageRange.replace(/,/g, '-')}.pdf`);
+      const fileName = files[0].name.replace('.pdf', `_extracted.pdf`);
       saveAs(result, fileName);
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-lg shadow-orange-200 dark:shadow-orange-900/30">
-          <Scissors className="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">PDF Split & Extract</h2>
-          <p className="text-slate-500 dark:text-white/60">Extract specific pages from PDF</p>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
+    <ToolWrapper
+      title="PDF Page Extractor"
+      description="Precisely isolate and extract specific sections from your documents"
+      icon={Scissors}
+      loading={loading}
+      accentColor="orange"
+      main={
+        <div className="space-y-6">
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
             <Dropzone
               accept={{ 'application/pdf': ['.pdf'] }}
               onFilesChange={handleFilesChange}
@@ -87,140 +84,126 @@ export function SplitPdf() {
             />
           </div>
 
-          {pdfInfo && (
-            <div className="bg-orange-50 dark:bg-orange-900/30 rounded-xl p-4 flex items-center gap-3">
-              <FileText className="w-5 h-5 text-orange-500" />
-              <span className="text-slate-700 dark:text-white/80">
-                Total: {pdfInfo.pageCount} page{pdfInfo.pageCount > 1 ? 's' : ''}
-              </span>
-            </div>
-          )}
-
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
-            <label className="block text-sm font-medium text-slate-700 dark:text-white/80 mb-2">
-              Page Range
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
+            <label className="block text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <Scissors className="w-4 h-4 text-orange-500" />
+              Extraction Range
             </label>
             <input
               type="text"
               value={pageRange}
               onChange={(e) => setPageRange(e.target.value)}
               placeholder="e.g., 1-3, 5, 7-9"
-              className="w-full p-3 rounded-xl bg-slate-50 dark:bg-[#050505]/60 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full p-4 rounded-2xl bg-white/50 dark:bg-black/40 border border-slate-200/50 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/50 text-xl font-bold font-outfit"
             />
-            <div className="flex items-start gap-2 mt-2">
-              <Info className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-slate-500 dark:text-white/60">
-                Enter page numbers or ranges separated by commas. Examples: "1-5", "1,3,5", "1-3,5,7-9"
+            
+            <div className="flex items-start gap-3 mt-4 p-3 rounded-xl bg-slate-100/50 dark:bg-white/5">
+              <Info className="w-4 h-4 text-orange-500 flex-shrink-0 mt-0.5" />
+              <p className="text-[10px] text-slate-500 dark:text-white/40 leading-relaxed font-bold uppercase tracking-tight">
+                Neural Syntax: Use commas for separation and hyphens for ranges (e.g., "1-5, 8, 10-12")
               </p>
             </div>
           </div>
 
           {pdfInfo && (
-            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
-              <p className="text-sm font-medium text-slate-700 dark:text-white/80 mb-3">Quick Select</p>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={() => setPageRange('1')}
-                  className="px-4 py-2.5 text-sm font-medium rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors touch-manipulation"
-                >
-                  First Page
-                </button>
-                <button
-                  onClick={() => setPageRange(String(pdfInfo.pageCount))}
-                  className="px-4 py-2.5 text-sm font-medium rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors touch-manipulation"
-                >
-                  Last Page
-                </button>
-                <button
-                  onClick={() => setPageRange(`1-${Math.ceil(pdfInfo.pageCount / 2)}`)}
-                  className="px-4 py-2.5 text-sm font-medium rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors touch-manipulation"
-                >
-                  First Half
-                </button>
-                <button
-                  onClick={() => {
-                    const evens = Array.from({ length: pdfInfo.pageCount }, (_, i) => i + 1)
-                      .filter((n) => n % 2 === 0)
-                      .join(',');
-                    setPageRange(evens);
-                  }}
-                  className="px-4 py-2.5 text-sm font-medium rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors touch-manipulation"
-                >
-                  Even Pages
-                </button>
-                <button
-                  onClick={() => {
-                    const odds = Array.from({ length: pdfInfo.pageCount }, (_, i) => i + 1)
-                      .filter((n) => n % 2 === 1)
-                      .join(',');
-                    setPageRange(odds);
-                  }}
-                  className="px-4 py-2.5 text-sm font-medium rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-orange-100 dark:hover:bg-orange-900/30 transition-colors touch-manipulation"
-                >
-                  Odd Pages
-                </button>
+            <div className="glass rounded-3xl p-6 animate-in">
+              <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4">Neural Quick Select</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {[
+                  { label: 'First Page', value: '1' },
+                  { label: 'Last Page', value: String(pdfInfo.pageCount) },
+                  { label: 'First Half', value: `1-${Math.ceil(pdfInfo.pageCount / 2)}` },
+                  { label: 'Even Pages', value: 'evens' },
+                  { label: 'Odd Pages', value: 'odds' },
+                  { label: 'Clear', value: '' }
+                ].map((preset) => (
+                  <button
+                    key={preset.label}
+                    onClick={() => {
+                      if (preset.value === 'evens') {
+                        setPageRange(Array.from({ length: pdfInfo.pageCount }, (_, i) => i + 1).filter(n => n % 2 === 0).join(','));
+                      } else if (preset.value === 'odds') {
+                        setPageRange(Array.from({ length: pdfInfo.pageCount }, (_, i) => i + 1).filter(n => n % 2 === 1).join(','));
+                      } else {
+                        setPageRange(preset.value);
+                      }
+                    }}
+                    className="px-4 py-2 text-[10px] font-black uppercase rounded-xl border border-white/5 bg-white/50 dark:bg-white/5 text-slate-600 dark:text-white/60 hover:bg-orange-500 hover:text-white transition-all tracking-tighter"
+                  >
+                    {preset.label}
+                  </button>
+                ))}
               </div>
             </div>
           )}
 
-          <Button onClick={handleSplit} loading={loading} className="w-full" size="lg">
-            <Scissors className="w-5 h-5" />
-            Extract Pages
+          <Button onClick={handleSplit} loading={loading} className="w-full h-14 rounded-2xl text-lg font-bold" size="lg">
+            <Scissors className="w-5 h-5 mr-2" />
+            Extract Neural Pages
           </Button>
         </div>
+      }
+      sidebar={
+        <div className="space-y-6">
+          <OutputCard
+            title="Extraction Result"
+            icon={Scissors}
+            content={
+              result ? (
+                <div className="space-y-6">
+                  <div className="relative h-32 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-orange-500/5 rounded-[2rem] animate-pulse" />
+                    <div className="text-center relative z-10">
+                      <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-1">Extracted</p>
+                      <p className="text-5xl font-black text-orange-500">{extractedPages.length}</p>
+                      <p className="text-[10px] text-orange-600/60 dark:text-orange-400/40 font-bold mt-1">Total Pages</p>
+                    </div>
+                  </div>
 
-        <div className="space-y-4">
-          {result ? (
-            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-6">
-              <h3 className="font-semibold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                <Scissors className="w-5 h-5 text-orange-600" />
-                Extraction Result
-              </h3>
+                  <div className="glass rounded-2xl p-5 border-white/5">
+                    <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-3">Page Map</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {extractedPages.map((page) => (
+                        <span
+                          key={page}
+                          className="px-2 py-0.5 bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-black rounded-md"
+                        >
+                          {page}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
 
-              <div className="bg-orange-50 dark:bg-orange-900/30 rounded-xl p-4 mb-4">
-                <p className="text-sm text-slate-500 dark:text-white/60 mb-2">Extracted Pages</p>
-                <div className="flex flex-wrap gap-2">
-                  {extractedPages.map((page) => (
-                    <span
-                      key={page}
-                      className="px-3 py-1 bg-orange-500 text-white rounded-full text-sm font-medium"
-                    >
-                      {page}
-                    </span>
-                  ))}
+                  <div className="glass rounded-2xl p-5 border-white/5">
+                    <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-2">New Payload</p>
+                    <p className="text-lg font-bold text-slate-700 dark:text-white/80">
+                      {(result.size / 1024).toFixed(1)} KB
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : null
+            }
+            onDownload={downloadResult}
+            empty={!result}
+            emptyText="Define your extraction range and process to generate the isolated document."
+          />
 
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-slate-50 dark:bg-[#050505]/40 rounded-xl p-4 text-center">
-                  <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                    {extractedPages.length}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-white/60">Pages Extracted</p>
-                </div>
-                <div className="bg-slate-50 dark:bg-[#050505]/40 rounded-xl p-4 text-center">
-                  <p className="text-2xl font-bold text-slate-700 dark:text-white/80">
-                    {(result.size / 1024).toFixed(1)} KB
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-white/60">New File Size</p>
-                </div>
-              </div>
-
-              <Button onClick={downloadResult} className="w-full" size="lg">
-                <Download className="w-5 h-5" />
-                Download Extracted PDF
-              </Button>
-            </div>
-          ) : (
-            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-6 min-h-[300px] flex items-center justify-center">
-              <div className="text-center text-slate-400">
-                <Scissors className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                <p>Upload a PDF and select pages to extract</p>
+          {pdfInfo && (
+            <div className="glass rounded-[2rem] p-6 animate-in">
+              <h4 className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Source Analytics
+              </h4>
+              <div className="flex justify-between items-center px-2">
+                <span className="text-sm font-bold text-slate-700 dark:text-white/70">Total Available</span>
+                <span className="text-lg font-black text-orange-500">{pdfInfo.pageCount}</span>
               </div>
             </div>
           )}
         </div>
-      </div>
-    </div>
+      }
+    />
+  );
+}
   );
 }

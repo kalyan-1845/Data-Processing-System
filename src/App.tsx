@@ -11,6 +11,7 @@ import { SplitPdf } from '@/components/SplitPdf';
 import { SplitMany } from '@/components/SplitMany';
 import { MergePdf } from '@/components/MergePdf';
 import { Entrance } from '@/components/Entrance';
+import { Dashboard } from '@/components/Dashboard';
 import { NeuralParticles } from '@/ui/particles';
 import { cn } from '@/utils/cn';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -43,7 +44,8 @@ type Module =
   | 'image-compress'
   | 'split-pdf'
   | 'split-many'
-  | 'merge-pdf';
+  | 'merge-pdf'
+  | 'dashboard';
 
 interface NavItem {
   id: Module;
@@ -228,7 +230,7 @@ function TechnicalHUD({ module }: { module: string }) {
 function AppContent() {
   const [activeModule, setActiveModule] = useState<Module>(() => {
     const saved = localStorage.getItem('docushrink-module');
-    return (saved as Module) || 'summarizer';
+    return (saved as Module) || 'dashboard';
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
@@ -297,13 +299,14 @@ function AppContent() {
           className="relative"
         >
           <AnimatePresence mode="wait">
-            <motion.div
+            {activeModule !== 'dashboard' && (
+              <motion.div
                 key={`loader-${activeModule}`}
                 initial={{ opacity: 1 }}
                 animate={{ opacity: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
                 className="absolute inset-0 z-[30] flex items-center justify-center bg-[#020202]/80 backdrop-blur-2xl pointer-events-none rounded-[2rem]"
-            >
+              >
                 <div className="flex flex-col items-center gap-6">
                     <motion.div 
                         initial={{ scale: 0.5, rotate: -180, opacity: 0 }}
@@ -321,7 +324,8 @@ function AppContent() {
                         </h3>
                     </div>
                 </div>
-            </motion.div>
+              </motion.div>
+            )}
           </AnimatePresence>
 
           {(() => {
@@ -336,7 +340,8 @@ function AppContent() {
               case 'split-pdf': return <SplitPdf />;
               case 'split-many': return <SplitMany />;
               case 'merge-pdf': return <MergePdf />;
-              default: return <Summarizer />;
+              case 'dashboard': return <Dashboard onSelectModule={handleModuleChange} />;
+              default: return <Dashboard onSelectModule={handleModuleChange} />;
             }
           })()}
         </motion.div>
@@ -408,6 +413,7 @@ function AppContent() {
                 <div className="absolute inset-0 bg-accent/25 blur-lg animate-pulse" />
                 <img src="/pwa-192x192.png" alt="Logo" className="w-9 h-9 relative z-10 drop-shadow-[0_0_12px_rgba(var(--accent),0.8)]" />
               </div>
+              </div>
               <div>
                 <h1 className="font-extrabold font-outfit text-2xl text-white tracking-[-0.04em] leading-none">DocuShrink</h1>
                 <p className="text-[10px] font-bold text-accent uppercase tracking-[0.3em] mt-1 opacity-80">Neural Core v1.0</p>
@@ -417,6 +423,20 @@ function AppContent() {
 
           <nav className="flex-1 overflow-y-auto p-4 space-y-8 pencil-scrollbar">
             <div>
+              <button
+                onClick={() => handleModuleChange('dashboard')}
+                className={cn(
+                  'group relative w-full flex items-center gap-4 px-4 py-4 rounded-xl transition-all duration-300 active:scale-[0.98]',
+                  activeModule === 'dashboard' ? 'text-white' : 'text-white/40 hover:text-white'
+                )}
+              >
+                {activeModule === 'dashboard' && (
+                  <motion.div layoutId="activeNav" className="absolute inset-0 bg-accent rounded-xl shadow-accent border border-white/10" />
+                )}
+                <Menu className="w-6 h-6 relative z-10" />
+                <span className="text-base font-medium relative z-10">Dashboard</span>
+              </button>
+            </div>
               <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-3 px-3">AI Engines</p>
               <div className="space-y-1">
                 {aiItems.map((item) => (

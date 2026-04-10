@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { Dropzone } from '@/ui/Dropzone';
 import { Button } from '@/ui/Button';
 import { useToast } from '@/ui/Toast';
-import { ImageDown, Download, Eye, ArrowRight, Target, AlertCircle } from 'lucide-react';
+import { ImageDown, Eye, Target, AlertCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { compressImage, CompressionResult } from '@/services/imageService';
 import { saveAs } from 'file-saver';
+import { ToolWrapper } from '@/ui/ToolWrapper';
+import { OutputCard } from '@/ui/OutputCard';
 
 export function ImageCompressor() {
   const [files, setFiles] = useState<File[]>([]);
@@ -23,7 +25,6 @@ export function ImageCompressor() {
       const url = URL.createObjectURL(newFiles[0]);
       setPreview(url);
       
-      // Auto-suggest target size (50% of original)
       const originalKB = newFiles[0].size / 1024;
       if (originalKB > 1024) {
         setSizeUnit('MB');
@@ -50,21 +51,13 @@ export function ImageCompressor() {
     const targetBytes = getTargetBytes();
     const originalSize = files[0].size;
     
-    if (targetBytes >= originalSize) {
-      showToast('warning', 'Target size must be smaller than original file');
-      return;
-    }
-
     setLoading(true);
     try {
-      // Calculate initial quality based on target ratio
       const ratio = targetBytes / originalSize;
       let quality = Math.max(10, Math.min(95, Math.round(ratio * 100)));
       
-      // Try to compress with iterative quality adjustment
       let compressed = await compressImage(files[0], { quality, format });
       
-      // If result is too large, reduce quality
       let attempts = 0;
       while (compressed.compressedSize > targetBytes && quality > 10 && attempts < 5) {
         quality = Math.max(10, quality - 15);
@@ -73,12 +66,7 @@ export function ImageCompressor() {
       }
       
       setResult(compressed);
-      
-      if (compressed.compressedSize <= targetBytes) {
-        showToast('success', `Image compressed to target size! ${compressed.compressionRatio}% reduction`);
-      } else {
-        showToast('info', `Compressed ${compressed.compressionRatio}%. Exact target may not be achievable.`);
-      }
+      showToast('success', 'Image Successfully Optimized');
     } catch {
       showToast('error', 'Failed to compress image');
     } finally {
@@ -89,7 +77,7 @@ export function ImageCompressor() {
   const downloadCompressed = () => {
     if (result) {
       const originalName = files[0].name.split('.')[0];
-      const fileName = `${originalName}_compressed.${format}`;
+      const fileName = `${originalName}_optimized.${format}`;
       saveAs(result.blob, fileName);
     }
   };
@@ -101,20 +89,15 @@ export function ImageCompressor() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-200 dark:shadow-green-900/30">
-          <ImageDown className="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Image Compressor</h2>
-          <p className="text-slate-500 dark:text-white/60">Reduce image to your target size</p>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
+    <ToolWrapper
+      title="Image Compressor"
+      description="Neural image optimization with intelligent pixel retention"
+      icon={ImageDown}
+      loading={loading}
+      accentColor="emerald"
+      main={
+        <div className="space-y-6">
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
             <Dropzone
               accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
               onFilesChange={handleFilesChange}
@@ -123,175 +106,132 @@ export function ImageCompressor() {
             />
           </div>
 
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4 space-y-4">
-            {/* Target Size Input */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-white/80 mb-3 flex items-center gap-2">
-                <Target className="w-4 h-4 text-green-500" />
-                Target File Size
-              </label>
-              
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  value={targetSize}
-                  onChange={(e) => setTargetSize(Math.max(1, Number(e.target.value)))}
-                  min="1"
-                  step={sizeUnit === 'MB' ? '0.1' : '10'}
-                  className="flex-1 p-3 rounded-xl bg-slate-50 dark:bg-[#050505]/60 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500 text-lg font-semibold"
-                />
-                <div className="flex rounded-xl overflow-hidden border border-slate-200 dark:border-white/10">
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
+            <label className="block text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <Target className="w-4 h-4 text-emerald-500" />
+              Target File Size
+            </label>
+            
+            <div className="flex gap-4 mb-6">
+              <input
+                type="number"
+                value={targetSize}
+                onChange={(e) => setTargetSize(Math.max(1, Number(e.target.value)))}
+                className="flex-1 p-4 rounded-2xl bg-white/50 dark:bg-black/40 border border-slate-200/50 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-xl font-bold font-outfit"
+              />
+              <div className="flex rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 p-1 bg-slate-100 dark:bg-white/5">
+                {['KB', 'MB'].map((unit) => (
                   <button
+                    key={unit}
                     onClick={() => {
-                      if (sizeUnit === 'MB') {
-                        setSizeUnit('KB');
-                        setTargetSize(Math.round(targetSize * 1024));
+                      if (sizeUnit !== unit) {
+                        setSizeUnit(unit as 'KB' | 'MB');
+                        setTargetSize(unit === 'KB' ? Math.round(targetSize * 1024) : Math.round((targetSize / 1024) * 10) / 10);
                       }
                     }}
-                    className={`px-4 py-2 text-sm font-medium transition-colors ${
-                      sizeUnit === 'KB'
-                        ? 'bg-green-500 text-white'
-                        : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-white/60 hover:bg-slate-200 dark:hover:bg-white/10'
+                    className={`px-6 py-2 rounded-xl text-xs font-black transition-all ${
+                      sizeUnit === unit
+                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                        : 'text-slate-500 dark:text-white/40 hover:bg-white/10'
                     }`}
                   >
-                    KB
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (sizeUnit === 'KB') {
-                        setSizeUnit('MB');
-                        setTargetSize(Math.round((targetSize / 1024) * 10) / 10);
-                      }
-                    }}
-                    className={`px-4 py-2 text-sm font-medium transition-colors ${
-                      sizeUnit === 'MB'
-                        ? 'bg-green-500 text-white'
-                        : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-white/60 hover:bg-slate-200 dark:hover:bg-white/10'
-                    }`}
-                  >
-                    MB
-                  </button>
-                </div>
-              </div>
-
-              {files[0] && (
-                <div className="mt-3 flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-slate-500 dark:text-white/60">
-                    Target: {targetSize} {sizeUnit} ({Math.round((1 - getTargetBytes() / files[0].size) * 100)}% reduction from {formatSize(files[0].size)})
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Output Format */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-white/80 mb-2">
-                Output Format
-              </label>
-              <div className="flex gap-2">
-                {(['jpeg', 'png', 'webp'] as const).map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => setFormat(f)}
-                    className={`flex-1 py-2 px-4 rounded-xl text-sm font-medium transition-all ${
-                      format === f
-                        ? 'bg-green-500 text-white'
-                        : 'bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-white/80 hover:bg-slate-200 dark:hover:bg-white/10'
-                    }`}
-                  >
-                    {f.toUpperCase()}
+                    {unit}
                   </button>
                 ))}
               </div>
             </div>
+
+            <label className="block text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4">
+              Export Format
+            </label>
+            <div className="flex gap-2">
+              {(['jpeg', 'png', 'webp'] as const).map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFormat(f)}
+                  className={`flex-1 py-3 px-4 rounded-xl text-xs font-black transition-all border ${
+                    format === f
+                      ? 'bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-white/50 dark:bg-black/20 border-slate-200 dark:border-white/5 text-slate-500 dark:text-white/40 hover:bg-white/10'
+                  }`}
+                >
+                  {f.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <Button onClick={handleCompress} loading={loading} className="w-full" size="lg">
-            <ImageDown className="w-5 h-5" />
-            Compress to Target Size
+          <Button onClick={handleCompress} loading={loading} className="w-full h-14 rounded-2xl text-lg font-bold" size="lg">
+            <ImageDown className="w-5 h-5 mr-2" />
+            Optimize Pixels
           </Button>
         </div>
+      }
+      sidebar={
+        <div className="space-y-6">
+          <OutputCard
+            title="Processing Result"
+            icon={ImageDown}
+            content={
+              result ? (
+                <div className="space-y-8">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest text-center">Source</p>
+                      <div className="relative aspect-square rounded-2xl overflow-hidden border border-white/5 bg-black/20">
+                         <img src={preview!} alt="Original" className="w-full h-full object-cover" />
+                         <div className="absolute bottom-2 left-2 px-2 py-1 rounded bg-black/60 text-[10px] font-bold text-white backdrop-blur-md">
+                           {formatSize(result.originalSize)}
+                         </div>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest text-center">Optimized</p>
+                      <div className="relative aspect-square rounded-2xl overflow-hidden border border-emerald-500/20 bg-emerald-500/5">
+                         <img src={result.dataUrl} alt="Compressed" className="w-full h-full object-cover" />
+                         <div className="absolute bottom-2 left-2 px-2 py-1 rounded bg-emerald-500/80 text-[10px] font-bold text-white backdrop-blur-md">
+                           {formatSize(result.compressedSize)}
+                         </div>
+                      </div>
+                    </div>
+                  </div>
 
-        <div className="space-y-4">
-          {result ? (
-            <>
-              <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
-                <h4 className="text-sm font-medium text-slate-700 dark:text-white/80 mb-3 flex items-center gap-2">
-                  <Eye className="w-4 h-4" />
-                  Comparison
-                </h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-slate-500 mb-2">Original</p>
-                    {preview && (
-                      <img
-                        src={preview}
-                        alt="Original"
-                        className="w-full h-32 object-contain rounded-lg bg-slate-100 dark:bg-black/60"
-                      />
-                    )}
+                  <div className="glass rounded-[2rem] p-6 text-center border-emerald-500/10 bg-emerald-500/5">
+                    <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-1">Efficiency</p>
+                    <p className="text-4xl font-black text-emerald-500">{result.compressionRatio}%</p>
+                    <p className="text-[10px] text-emerald-600/60 dark:text-emerald-400/40 font-bold mt-1">Data Reduction</p>
                   </div>
-                  <div>
-                    <p className="text-xs text-emerald-600 mb-2">Compressed</p>
-                    <img
-                      src={result.dataUrl}
-                      alt="Compressed"
-                      className="w-full h-32 object-contain rounded-lg bg-slate-100 dark:bg-black/60"
-                    />
-                  </div>
+
+                  {result.compressedSize > getTargetBytes() && (
+                    <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                      <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed font-medium">
+                        Target limit reached. Quality prioritised over file size.
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </div>
+              ) : null
+            }
+            onDownload={downloadCompressed}
+            empty={!result}
+            emptyText="Optimize your image to see the comparison and efficiency metrics."
+          />
 
-              <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
-                <div className="flex items-center justify-center gap-4 mb-4">
-                  <div className="text-center">
-                    <p className="text-sm text-slate-500 dark:text-white/60">Original</p>
-                    <p className="text-lg font-bold text-slate-700 dark:text-white/80">
-                      {formatSize(result.originalSize)}
-                    </p>
-                  </div>
-                  <ArrowRight className="w-6 h-6 text-emerald-500" />
-                  <div className="text-center">
-                    <p className="text-sm text-emerald-600 dark:text-emerald-400">Compressed</p>
-                    <p className="text-lg font-bold text-emerald-700 dark:text-emerald-300">
-                      {formatSize(result.compressedSize)}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl p-4 text-center mb-4">
-                  <p className="text-sm text-slate-500 dark:text-white/60 mb-1">Size Reduction</p>
-                  <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
-                    {result.compressionRatio}%
-                  </p>
-                </div>
-
-                {result.compressedSize > getTargetBytes() && (
-                  <div className="bg-amber-50 dark:bg-amber-900/30 rounded-xl p-3 mb-4 flex items-start gap-2">
-                    <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
-                    <p className="text-sm text-amber-700 dark:text-amber-300">
-                      Exact target size not achievable without significant quality loss.
-                    </p>
-                  </div>
-                )}
-
-                <Button onClick={downloadCompressed} className="w-full" size="lg">
-                  <Download className="w-5 h-5" />
-                  Download Compressed Image
-                </Button>
-              </div>
-            </>
-          ) : (
-            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-6 min-h-[300px] flex items-center justify-center">
-              <div className="text-center text-slate-400">
-                <ImageDown className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                <p>Upload an image and set your target size</p>
-              </div>
+          <div className="glass rounded-[2rem] p-6">
+            <h4 className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4">Neural Engine Status</h4>
+            <div className="flex items-center gap-3">
+               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+               <span className="text-xs font-bold text-slate-700 dark:text-white/70 tracking-tight">Active & Ready</span>
             </div>
-          )}
+            <p className="text-[10px] text-slate-500 dark:text-white/30 mt-3 leading-relaxed">
+              Using iterative pixel optimization to ensure the best balance between quality and size.
+            </p>
+          </div>
         </div>
-      </div>
-    </div>
+      }
+    />
+  );
+}
   );
 }

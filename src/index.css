@@ -156,11 +156,63 @@ body {
 
 /* Glassmorphism utilities */
 .glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
+  background: rgba(var(--background), 0.5);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.dark .glass {
+  background: rgba(10, 10, 10, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Premium Animations */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(var(--accent), 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float-slow {
+  animation: float-slow 5s ease-in-out infinite;
+}
+
+@keyframes neural-pulse {
+  0%, 100% { opacity: 0.3; scale: 1; }
+  50% { opacity: 0.8; scale: 1.05; }
+}
+
+.animate-neural-pulse {
+  animation: neural-pulse 3s ease-in-out infinite;
+}
+
+/* Scrollbar Refinement */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent), 0.1);
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--accent), 0.3);
 }
 
 /* Selections */

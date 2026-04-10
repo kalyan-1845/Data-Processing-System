@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { Dropzone } from '@/ui/Dropzone';
 import { Button } from '@/ui/Button';
 import { useToast } from '@/ui/Toast';
-import { ScanText, Copy, Download, Eye } from 'lucide-react';
+import { ScanText, Eye, Sparkles } from 'lucide-react';
 import { performOcr, OCR_LANGUAGES, OcrProgress } from '@/services/ocrService';
+import { ToolWrapper } from '@/ui/ToolWrapper';
+import { OutputCard } from '@/ui/OutputCard';
 
 export function OCR() {
   const [files, setFiles] = useState<File[]>([]);
@@ -47,11 +49,6 @@ export function OCR() {
     }
   };
 
-  const copyText = () => {
-    navigator.clipboard.writeText(text);
-    showToast('success', 'Text copied to clipboard!');
-  };
-
   const downloadText = () => {
     const blob = new Blob([text], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -63,23 +60,15 @@ export function OCR() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-xl shadow-pink-500/20 dark:shadow-pink-900/40 relative group overflow-hidden">
-          <div className="absolute inset-0 bg-white/20 group-hover:bg-white/0 transition-colors duration-300" />
-          <ScanText className="w-7 h-7 text-white relative z-10 animate-float" />
-        </div>
-        <div>
-          <h2 className="text-3xl font-extrabold font-outfit bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-rose-600 dark:from-pink-400 dark:to-rose-400">
-            AI OCR Text Extractor
-          </h2>
-          <p className="text-slate-500 dark:text-white/60 font-medium">Extract text from images</p>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8">
+    <ToolWrapper
+      title="OCR Text Extractor"
+      description="Convert images and scanned documents into editable neural text"
+      icon={ScanText}
+      loading={loading}
+      accentColor="orange"
+      main={
         <div className="space-y-6">
-          <div className="glass rounded-3xl p-5 hover:shadow-xl hover:shadow-pink-500/10 hover:-translate-y-1 transition-all duration-300">
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
             <Dropzone
               accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp'] }}
               onFilesChange={handleFilesChange}
@@ -89,27 +78,30 @@ export function OCR() {
           </div>
 
           {preview && (
-            <div className="glass rounded-3xl p-5 hover:shadow-xl hover:shadow-pink-500/10 hover:-translate-y-1 transition-all duration-300">
-              <h4 className="text-sm font-medium text-slate-700 dark:text-white/80 mb-3 flex items-center gap-2">
+            <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
+              <h4 className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4 flex items-center gap-2">
                 <Eye className="w-4 h-4" />
                 Image Preview
               </h4>
-              <img
-                src={preview}
-                alt="Preview"
-                className="w-full h-48 object-cover rounded-2xl shadow-inner border border-white/20 dark:border-white/5"
-              />
+              <div className="relative group overflow-hidden rounded-2xl border border-white/10">
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="w-full h-64 object-contain bg-black/20"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
             </div>
           )}
 
-          <div className="glass rounded-3xl p-5 hover:shadow-xl hover:shadow-pink-500/10 hover:-translate-y-1 transition-all duration-300">
-            <label className="block text-sm font-medium text-slate-700 dark:text-white/80 mb-2">
-              Recognition Language
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
+            <label className="block text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4">
+              Neural Language Model
             </label>
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="w-full p-4 rounded-2xl bg-white/50 dark:bg-black/40 border border-slate-200/50 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500/50 transition-all"
+              className="w-full p-4 rounded-2xl bg-white/50 dark:bg-black/40 border border-slate-200/50 dark:border-white/10 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all font-outfit font-bold"
             >
               {OCR_LANGUAGES.map((lang) => (
                 <option key={lang.code} value={lang.code}>
@@ -119,78 +111,71 @@ export function OCR() {
             </select>
           </div>
 
-          {progress && (
-            <div className="glass rounded-3xl p-5 bg-pink-50/50 dark:bg-pink-900/10">
-              <div className="flex justify-between text-sm mb-3">
-                <span className="text-pink-700 dark:text-pink-300 font-medium">{progress.status}</span>
-                <span className="text-pink-600 dark:text-pink-400 font-bold">{progress.progress}%</span>
+          <Button onClick={handleProcess} loading={loading} className="w-full h-14 rounded-2xl text-lg font-bold" size="lg">
+            <ScanText className="w-5 h-5 mr-2" />
+            Extract Text
+          </Button>
+        </div>
+      }
+      sidebar={
+        <div className="space-y-6">
+          <OutputCard
+            title="Extracted Neural Text"
+            icon={ScanText}
+            content={
+              text ? (
+                <div className="space-y-4">
+                  <div className="relative group">
+                    <pre className="text-sm text-slate-700 dark:text-white/80 whitespace-pre-wrap font-inter bg-slate-50 dark:bg-black/40 p-5 rounded-2xl border border-white/5 max-h-96 overflow-y-auto leading-relaxed">
+                      {text}
+                    </pre>
+                  </div>
+                </div>
+              ) : null
+            }
+            onDownload={downloadText}
+            empty={!text}
+            emptyText="AI-identified text from your image will appear here."
+          />
+
+          {loading && progress && (
+            <div className="glass rounded-[2rem] p-6 animate-in bg-orange-500/5 border-orange-500/10">
+              <div className="flex justify-between items-end mb-4">
+                <div>
+                  <p className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">Status</p>
+                  <p className="text-sm font-bold text-slate-700 dark:text-white">{progress.status}</p>
+                </div>
+                <p className="text-2xl font-black text-orange-500">{progress.progress}%</p>
               </div>
-              <div className="w-full h-2 bg-pink-200/50 dark:bg-pink-800/50 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-pink-500 to-rose-500 transition-all duration-300 ease-out"
-                  style={{ width: `${progress.progress}%` }}
+              <div className="w-full h-2 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress.progress}%` }}
+                  className="h-full bg-gradient-to-r from-orange-500 to-rose-500"
                 />
               </div>
             </div>
           )}
 
-          <Button onClick={handleProcess} loading={loading} className="w-full" size="lg">
-            <ScanText className="w-5 h-5" />
-            Extract Text
-          </Button>
-        </div>
-
-        <div className="space-y-6">
-          <div className="glass rounded-3xl p-6 min-h-[300px] flex flex-col hover:shadow-xl hover:shadow-rose-500/10 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-rose-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-            <div className="flex items-center justify-between mb-6 relative z-10">
-              <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                <ScanText className="w-5 h-5 text-pink-600" />
-                Extracted Text
-              </h3>
-              {text && (
-                <div className="flex gap-2">
-                  <Button size="sm" variant="ghost" onClick={copyText}>
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={downloadText}>
-                    <Download className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {text ? (
-              <div className="prose prose-slate dark:prose-invert max-w-none">
-                <pre className="text-sm text-slate-700 dark:text-white/80 whitespace-pre-wrap font-sans bg-slate-50 dark:bg-[#050505]/60 p-4 rounded-xl max-h-96 overflow-y-auto">
-                  {text}
-                </pre>
+          {confidence > 0 && !loading && (
+            <div className="glass rounded-[2rem] p-6 animate-in border-emerald-500/10 dark:border-emerald-500/5">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Accuracy</p>
+                <div className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase">Verified</div>
               </div>
-            ) : (
-              <div className="flex items-center justify-center h-48 text-slate-400">
-                Extracted text will appear here
-              </div>
-            )}
-          </div>
-
-          {confidence > 0 && (
-            <div className="glass rounded-3xl p-5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-pink-50/50 dark:bg-pink-900/10">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-slate-700 dark:text-white/80 font-medium">Recognition Confidence</span>
-                <span className="text-2xl font-bold text-pink-600 dark:text-pink-400">
-                  {Math.round(confidence)}%
-                </span>
-              </div>
-              <div className="w-full h-3 bg-pink-200/50 dark:bg-pink-800/50 rounded-full overflow-hidden">
+              <p className="text-3xl font-black text-slate-800 dark:text-white mb-4">{Math.round(confidence)}%</p>
+              <div className="w-full h-1.5 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-pink-500 to-rose-500 rounded-full"
+                  className="h-full bg-emerald-500"
                   style={{ width: `${confidence}%` }}
                 />
               </div>
             </div>
           )}
         </div>
-      </div>
-    </div>
+      }
+    />
+  );
+}
   );
 }

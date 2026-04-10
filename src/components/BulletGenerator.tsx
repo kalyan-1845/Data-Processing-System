@@ -3,8 +3,10 @@ import { Dropzone } from '@/ui/Dropzone';
 import { Button } from '@/ui/Button';
 import { Slider } from '@/ui/Slider';
 import { useToast } from '@/ui/Toast';
-import { List, Copy, Download, Sparkles } from 'lucide-react';
+import { List, Sparkles } from 'lucide-react';
 import { generateBullets, extractTextFromPdf } from '@/services/aiService';
+import { ToolWrapper } from '@/ui/ToolWrapper';
+import { OutputCard } from '@/ui/OutputCard';
 
 export function BulletGenerator() {
   const [files, setFiles] = useState<File[]>([]);
@@ -46,12 +48,6 @@ export function BulletGenerator() {
     }
   };
 
-  const copyBullets = () => {
-    const text = bullets.map((b) => `• ${b}`).join('\n');
-    navigator.clipboard.writeText(text);
-    showToast('success', 'Bullet points copied!');
-  };
-
   const downloadBullets = () => {
     const content = bullets.map((b) => `• ${b}`).join('\n\n');
     const blob = new Blob([content], { type: 'text/plain' });
@@ -64,20 +60,15 @@ export function BulletGenerator() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-200 dark:shadow-cyan-900/30">
-          <List className="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">AI Bullet Generator</h2>
-          <p className="text-slate-500 dark:text-white/60">Convert text to key bullet points</p>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
+    <ToolWrapper
+      title="Bullet Generator"
+      description="Convert dense paragraphs into organized, high-impact key points"
+      icon={List}
+      loading={loading}
+      accentColor="sky"
+      main={
+        <div className="space-y-6">
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
             <Dropzone
               accept={{ 'application/pdf': ['.pdf'] }}
               onFilesChange={setFiles}
@@ -86,76 +77,78 @@ export function BulletGenerator() {
             />
           </div>
 
-          <div className="text-center text-slate-500 dark:text-white/60 text-sm">OR</div>
+          <div className="relative flex justify-center py-2">
+             <span className="bg-slate-50 dark:bg-[#020202] px-4 text-xs font-bold text-slate-400 tracking-widest uppercase">OR</span>
+             <div className="absolute inset-y-1/2 left-0 right-0 h-px bg-slate-200 dark:bg-white/5 -z-10" />
+          </div>
 
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Paste your text here..."
-              className="w-full h-40 p-4 rounded-xl bg-slate-50 dark:bg-[#050505]/60 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full h-48 p-4 rounded-2xl bg-white/50 dark:bg-black/40 border border-slate-200/50 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-sky-500/50 transition-all font-inter"
             />
           </div>
 
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
             <Slider
-              label="Number of Bullet Points"
+              label="Point Density"
               value={count}
               onChange={(e) => setCount(Number(e.target.value))}
               min={3}
-              max={10}
+              max={15}
               step={1}
               showValue
             />
           </div>
 
-          <Button onClick={handleProcess} loading={loading} className="w-full" size="lg">
-            <Sparkles className="w-5 h-5" />
+          <Button onClick={handleProcess} loading={loading} className="w-full h-14 rounded-2xl text-lg font-bold" size="lg">
+            <Sparkles className="w-5 h-5 mr-2" />
             Generate Bullets
           </Button>
         </div>
+      }
+      sidebar={
+        <div className="space-y-6">
+          <OutputCard
+            title="Key Points"
+            icon={List}
+            content={
+              bullets.length > 0 ? (
+                <ul className="space-y-4">
+                  {bullets.map((bullet, index) => (
+                    <li
+                      key={index}
+                      className="group relative flex items-start gap-4 p-4 rounded-2xl bg-gradient-to-br from-sky-500/5 to-blue-500/5 border border-sky-500/10 transition-all hover:bg-sky-500/10"
+                    >
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-sky-500/20 flex items-center justify-center mt-0.5">
+                        <div className="w-2 h-2 bg-sky-500 rounded-full animate-pulse" />
+                      </span>
+                      <p className="text-slate-700 dark:text-white/80 font-medium leading-relaxed">
+                        {bullet}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              ) : null
+            }
+            onDownload={downloadBullets}
+            empty={bullets.length === 0}
+            emptyText="Structural bullet points will be derived from your content."
+          />
 
-        <div className="space-y-4">
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4 min-h-[300px]">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                <List className="w-5 h-5 text-cyan-600" />
-                Key Points
-              </h3>
-              {bullets.length > 0 && (
-                <div className="flex gap-2">
-                  <Button size="sm" variant="ghost" onClick={copyBullets}>
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={downloadBullets}>
-                    <Download className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
+          <div className="glass rounded-[2rem] p-6 text-center">
+            <div className="w-12 h-12 rounded-full bg-sky-500/10 flex items-center justify-center mx-auto mb-4">
+               <Sparkles className="w-6 h-6 text-sky-500" />
             </div>
-
-            {bullets.length > 0 ? (
-              <ul className="space-y-3">
-                {bullets.map((bullet, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-3 p-3 rounded-xl bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border border-cyan-200 dark:border-cyan-800"
-                  >
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full" />
-                    </span>
-                    <p className="text-slate-700 dark:text-white/80">{bullet}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="flex items-center justify-center h-48 text-slate-400">
-                Bullet points will appear here
-              </div>
-            )}
+            <h4 className="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-widest mb-1">AI Structured</h4>
+            <p className="text-[10px] text-slate-500 dark:text-white/40">Neural parsing preserves context</p>
           </div>
         </div>
-      </div>
-    </div>
+      }
+    />
+  );
+}
   );
 }

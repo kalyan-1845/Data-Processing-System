@@ -3,8 +3,11 @@ import { Dropzone } from '@/ui/Dropzone';
 import { Button } from '@/ui/Button';
 import { Slider } from '@/ui/Slider';
 import { useToast } from '@/ui/Toast';
-import { FileStack, Download, FileText, Package } from 'lucide-react';
+import { FileStack, FileText, Package, Sparkles } from 'lucide-react';
 import { splitPdfToMany, splitPdfByChunks, getPdfInfo } from '@/services/pdfService';
+import { ToolWrapper } from '@/ui/ToolWrapper';
+import { OutputCard } from '@/ui/OutputCard';
+import { motion } from 'framer-motion';
 
 export function SplitMany() {
   const [files, setFiles] = useState<File[]>([]);
@@ -42,10 +45,10 @@ export function SplitMany() {
     try {
       if (splitMode === 'individual') {
         await splitPdfToMany(files[0], (p) => setProgress(p));
-        showToast('success', 'PDF split into individual pages! Download started.');
+        showToast('success', 'Neural split complete! ZIP archive generated.');
       } else {
         await splitPdfByChunks(files[0], pagesPerChunk, (p) => setProgress(p));
-        showToast('success', `PDF split into chunks of ${pagesPerChunk} pages! Download started.`);
+        showToast('success', `Chunked split complete! ZIP archive generated.`);
       }
     } catch {
       showToast('error', 'Failed to split PDF');
@@ -61,20 +64,15 @@ export function SplitMany() {
     : 0;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-purple-200 dark:shadow-purple-900/30">
-          <FileStack className="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">One PDF → Many PDFs</h2>
-          <p className="text-slate-500 dark:text-white/60">Split PDF into multiple files</p>
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
+    <ToolWrapper
+      title="Batch PDF Splitter"
+      description="Deconstruct large documents into smaller, manageable neural nodes"
+      icon={FileStack}
+      loading={loading}
+      accentColor="purple"
+      main={
+        <div className="space-y-6">
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
             <Dropzone
               accept={{ 'application/pdf': ['.pdf'] }}
               onFilesChange={handleFilesChange}
@@ -83,155 +81,134 @@ export function SplitMany() {
             />
           </div>
 
-          {pdfInfo && (
-            <div className="bg-purple-50 dark:bg-purple-900/30 rounded-xl p-4 flex items-center gap-3">
-              <FileText className="w-5 h-5 text-purple-500" />
-              <span className="text-slate-700 dark:text-white/80">
-                Total: {pdfInfo.pageCount} page{pdfInfo.pageCount > 1 ? 's' : ''}
-              </span>
-            </div>
-          )}
-
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
-            <label className="block text-sm font-medium text-slate-700 dark:text-white/80 mb-3">
-              Split Mode
+          <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300">
+            <label className="block text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-6">
+              Deconstruction Mode
             </label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => setSplitMode('individual')}
-                className={`p-4 rounded-xl border-2 transition-all ${
-                  splitMode === 'individual'
-                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30'
-                    : 'border-slate-200 dark:border-white/10 hover:border-purple-300'
-                }`}
-              >
-                <FileText className={`w-6 h-6 mx-auto mb-2 ${
-                  splitMode === 'individual' ? 'text-purple-600' : 'text-slate-400'
-                }`} />
-                <p className={`text-sm font-medium ${
-                  splitMode === 'individual' ? 'text-purple-700 dark:text-purple-300' : 'text-slate-600 dark:text-white/60'
-                }`}>
-                  One Page Each
-                </p>
-                <p className="text-xs text-slate-500 mt-1">Each page as separate PDF</p>
-              </button>
-              <button
-                onClick={() => setSplitMode('chunks')}
-                className={`p-4 rounded-xl border-2 transition-all ${
-                  splitMode === 'chunks'
-                    ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30'
-                    : 'border-slate-200 dark:border-white/10 hover:border-purple-300'
-                }`}
-              >
-                <FileStack className={`w-6 h-6 mx-auto mb-2 ${
-                  splitMode === 'chunks' ? 'text-purple-600' : 'text-slate-400'
-                }`} />
-                <p className={`text-sm font-medium ${
-                  splitMode === 'chunks' ? 'text-purple-700 dark:text-purple-300' : 'text-slate-600 dark:text-white/60'
-                }`}>
-                  Fixed Chunks
-                </p>
-                <p className="text-xs text-slate-500 mt-1">N pages per PDF</p>
-              </button>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { id: 'individual', label: 'Atomic Split', desc: 'Each page as separate PDF', icon: FileText },
+                { id: 'chunks', label: 'Chunked Split', desc: 'N pages per PDF', icon: FileStack }
+              ].map((mode) => (
+                <button
+                  key={mode.id}
+                  onClick={() => setSplitMode(mode.id as any)}
+                  className={`relative p-5 rounded-2xl border transition-all text-left group ${
+                    splitMode === mode.id
+                      ? 'border-purple-500 bg-purple-500/5 ring-1 ring-purple-500/20'
+                      : 'border-white/5 bg-white/50 dark:bg-white/5 hover:border-purple-500/30'
+                  }`}
+                >
+                  <mode.icon className={`w-6 h-6 mb-3 transition-colors ${
+                    splitMode === mode.id ? 'text-purple-500' : 'text-slate-400'
+                  }`} />
+                  <p className={`text-xs font-black uppercase tracking-tight mb-1 ${
+                    splitMode === mode.id ? 'text-purple-700 dark:text-purple-400' : 'text-slate-600 dark:text-white/60'
+                  }`}>{mode.label}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-white/30 font-medium leading-tight">{mode.desc}</p>
+                </button>
+              ))}
             </div>
           </div>
 
           {splitMode === 'chunks' && (
-            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-4">
+            <div className="glass rounded-3xl p-6 hover:shadow-xl transition-all duration-300 animate-in">
               <Slider
-                label="Pages per PDF"
+                label="Chunk Size"
                 value={pagesPerChunk}
                 onChange={(e) => setPagesPerChunk(Number(e.target.value))}
                 min={1}
-                max={20}
+                max={50}
                 step={1}
                 showValue
               />
             </div>
           )}
 
+          <Button onClick={handleSplit} loading={loading} className="w-full h-14 rounded-2xl text-lg font-bold" size="lg">
+            <FileStack className="w-5 h-5 mr-2" />
+            Initialize Batch Split
+          </Button>
+        </div>
+      }
+      sidebar={
+        <div className="space-y-6">
+          <OutputCard
+            title="Batch Analytics"
+            icon={Package}
+            content={
+              pdfInfo ? (
+                <div className="space-y-8">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="glass rounded-2xl p-5 border-white/5 text-center">
+                      <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-1">Total Input</p>
+                      <p className="text-2xl font-black text-slate-700 dark:text-white/80">{pdfInfo.pageCount}</p>
+                      <p className="text-[10px] text-slate-500 font-bold">Pages</p>
+                    </div>
+                    <div className="glass rounded-2xl p-5 border-purple-500/10 text-center">
+                      <p className="text-[10px] font-bold text-purple-500 uppercase tracking-widest mb-1">Generated</p>
+                      <p className="text-2xl font-black text-purple-600 dark:text-purple-400">{estimatedFiles}</p>
+                      <p className="text-[10px] text-purple-500/60 font-bold">Files</p>
+                    </div>
+                  </div>
+
+                  <div className="glass rounded-2xl p-5 border-white/5">
+                    <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4">Payload Preview</p>
+                    <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                      {Array.from({ length: Math.min(estimatedFiles, 15) }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="px-3 py-1.5 bg-purple-500/5 dark:bg-white/5 rounded-xl text-[10px] font-bold text-purple-600 dark:text-white/50 border border-purple-500/10"
+                        >
+                          {splitMode === 'individual' ? `page_${i + 1}.pdf` : `batch_${i + 1}.pdf`}
+                        </div>
+                      ))}
+                      {estimatedFiles > 15 && (
+                        <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 italic">
+                          +{estimatedFiles - 15} more units...
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : null
+            }
+            empty={!pdfInfo}
+            emptyText="Analytics will generate once a source document is uploaded."
+          />
+
           {loading && (
-            <div className="bg-purple-50 dark:bg-purple-900/30 rounded-xl p-4">
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-purple-700 dark:text-purple-300">Processing...</span>
-                <span className="text-purple-600 dark:text-purple-400">{Math.round(progress)}%</span>
+            <div className="glass rounded-[2rem] p-6 animate-in bg-purple-500/5 border-purple-500/10">
+              <div className="flex justify-between items-end mb-4">
+                <div>
+                  <p className="text-[10px] font-bold text-purple-500 uppercase tracking-widest mb-1">Status</p>
+                  <p className="text-sm font-bold text-slate-700 dark:text-white">Fragmenting...</p>
+                </div>
+                <p className="text-2xl font-black text-purple-500">{Math.round(progress)}%</p>
               </div>
-              <div className="w-full h-2 bg-purple-200 dark:bg-purple-800 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-purple-500 to-fuchsia-500 transition-all duration-300"
-                  style={{ width: `${progress}%` }}
+              <div className="w-full h-2 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  className="h-full bg-gradient-to-r from-purple-500 to-fuchsia-500"
                 />
               </div>
             </div>
           )}
 
-          <Button onClick={handleSplit} loading={loading} className="w-full" size="lg">
-            <FileStack className="w-5 h-5" />
-            Split PDF
-          </Button>
-        </div>
-
-        <div className="space-y-4">
-          <div className="bg-white/60 dark:bg-white/5 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-white/10 p-6">
-            <h3 className="font-semibold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
-              <Package className="w-5 h-5 text-purple-600" />
-              Output Preview
-            </h3>
-
-            {pdfInfo ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-slate-50 dark:bg-[#050505]/40 rounded-xl p-4 text-center">
-                    <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                      {estimatedFiles}
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-white/60">Output PDFs</p>
-                  </div>
-                  <div className="bg-slate-50 dark:bg-[#050505]/40 rounded-xl p-4 text-center">
-                    <p className="text-2xl font-bold text-slate-700 dark:text-white/80">
-                      {splitMode === 'individual' ? 1 : pagesPerChunk}
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-white/60">Pages per PDF</p>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-purple-50 to-fuchsia-50 dark:from-purple-900/30 dark:to-fuchsia-900/30 rounded-xl p-4">
-                  <p className="text-sm text-slate-600 dark:text-white/60 mb-3">Generated files:</p>
-                  <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                    {Array.from({ length: Math.min(estimatedFiles, 12) }).map((_, i) => (
-                      <span
-                        key={i}
-                        className="px-2 py-1 bg-white dark:bg-white/5 rounded-lg text-xs text-slate-600 dark:text-white/60 border border-slate-200 dark:border-white/10"
-                      >
-                        {splitMode === 'individual'
-                          ? `page_${i + 1}.pdf`
-                          : `part_${i + 1}.pdf`}
-                      </span>
-                    ))}
-                    {estimatedFiles > 12 && (
-                      <span className="px-2 py-1 text-xs text-slate-500">
-                        +{estimatedFiles - 12} more...
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-white/60">
-                  <Download className="w-4 h-4" />
-                  <span>Output will be downloaded as a ZIP file</span>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center h-48 text-slate-400">
-                <div className="text-center">
-                  <FileStack className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p>Upload a PDF to see preview</p>
-                </div>
-              </div>
-            )}
+          <div className="glass rounded-[2rem] p-6">
+            <h4 className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest mb-4 flex items-center gap-2">
+              <Sparkles className="w-3 h-3" />
+              Efficiency Tip
+            </h4>
+            <p className="text-[10px] text-slate-500 dark:text-white/40 leading-relaxed font-medium italic">
+              "Splitting by chunks is ideal for long reports, while atomic splitting is perfect for extracting individual invoices or certificates."
+            </p>
           </div>
         </div>
-      </div>
-    </div>
+      }
+    />
+  );
+}
   );
 }
