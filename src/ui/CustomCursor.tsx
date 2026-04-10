@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { motion, useSpring, useMotionValue } from 'framer-motion';
+import { motion, useSpring, useMotionValue, useVelocity, useTransform } from 'framer-motion';
 import { cn } from '@/utils/cn';
 
 export function CustomCursor() {
@@ -10,9 +10,14 @@ export function CustomCursor() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   
-  const springConfig = { damping: 25, stiffness: 250 };
+  const springConfig = { damping: 20, stiffness: 150, mass: 0.5 };
   const cursorX = useSpring(mouseX, springConfig);
   const cursorY = useSpring(mouseY, springConfig);
+
+  // Dynamic rotation based on velocity (tilting the pencil as it moves)
+  const xVelocity = useVelocity(mouseX);
+  const tilt = useTransform(xVelocity, [-1000, 1000], [-15, 15]);
+  const rotation = useTransform(tilt, (v) => v - 45); // Base rotation is -45
 
   useEffect(() => {
     const moveMouse = (e: MouseEvent) => {
@@ -64,11 +69,12 @@ export function CustomCursor() {
       <motion.div
         initial={false}
         animate={{
-          rotate: isHovering ? -15 : -45,
+          rotate: isHovering ? -15 : 0, // This is relative to the base rotation
           scale: isHovering ? 1.2 : 1,
-          x: -4, // Adjust to point tip at (0,0)
+          x: -4,
           y: -24,
         }}
+        style={{ rotate: rotation }}
         transition={{ type: 'spring', damping: 20, stiffness: 300 }}
         className="relative"
       >
