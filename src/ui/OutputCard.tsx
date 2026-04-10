@@ -59,7 +59,7 @@ export function OutputCard({
       <div className="flex items-center justify-between mb-8 relative z-10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
-            <Icon className="w-5 h-5" />
+            <Icon className="w-5 h-5" aria-hidden="true" />
           </div>
           <h3 className="font-outfit font-bold text-slate-800 dark:text-white tracking-tight">
             {title}
@@ -68,16 +68,16 @@ export function OutputCard({
 
         {!empty && (
           <div className="flex gap-2">
-            <Button size="sm" variant="ghost" onClick={handleCopy} className="rounded-xl w-10 h-10 p-0">
-              {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+            <Button size="sm" variant="ghost" onClick={handleCopy} className="rounded-xl w-10 h-10 p-0" aria-label={copied ? 'Copied' : 'Copy to clipboard'}>
+              {copied ? <Check className="w-4 h-4 text-emerald-500" aria-hidden="true" /> : <Copy className="w-4 h-4" aria-hidden="true" />}
             </Button>
             {onDownload && (
-              <Button size="sm" variant="ghost" onClick={onDownload} className="rounded-xl w-10 h-10 p-0">
-                <Download className="w-4 h-4" />
+              <Button size="sm" variant="ghost" onClick={onDownload} className="rounded-xl w-10 h-10 p-0" aria-label="Download result">
+                <Download className="w-4 h-4" aria-hidden="true" />
               </Button>
             )}
-            <Button size="sm" variant="ghost" onClick={handleShare} className="rounded-xl w-10 h-10 p-0">
-              <Share2 className="w-4 h-4" />
+            <Button size="sm" variant="ghost" onClick={handleShare} className="rounded-xl w-10 h-10 p-0" aria-label="Share result">
+              <Share2 className="w-4 h-4" aria-hidden="true" />
             </Button>
           </div>
         )}

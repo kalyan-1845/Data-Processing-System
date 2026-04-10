@@ -115,7 +115,11 @@ export function Dropzone({
   return (
     <div className="space-y-3">
       <div
+        role="button"
+        tabIndex={0}
+        aria-label={label}
         onClick={handleClick}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -123,6 +127,7 @@ export function Dropzone({
           'relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-300',
           'bg-gradient-to-br from-slate-50/50 to-slate-100/50 dark:from-slate-800/50 dark:to-slate-900/50',
           'hover:border-violet-400 hover:bg-violet-50/50 dark:hover:bg-violet-900/20',
+          'focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:outline-none',
           isDragActive
             ? 'border-violet-500 bg-violet-50 dark:bg-violet-900/30 scale-[1.02]'
             : 'border-slate-300 dark:border-white/10'
@@ -138,7 +143,7 @@ export function Dropzone({
             <IconComponent className={cn(
               'w-7 h-7 transition-colors',
               isDragActive ? 'text-violet-600 dark:text-violet-400' : 'text-slate-400 dark:text-white/50'
-            )} />
+            )} aria-hidden="true" />
           </div>
           <div>
             <p className="text-sm font-medium text-slate-700 dark:text-white/80">{label}</p>
@@ -147,6 +152,10 @@ export function Dropzone({
             </p>
           </div>
         </div>
+      </div>
+      
+      <div aria-live="polite" className="sr-only">
+        {files.length > 0 ? `${files.length} file${files.length > 1 ? 's' : ''} selected` : ''}
       </div>
 
       {files.length > 0 && (
@@ -161,6 +170,7 @@ export function Dropzone({
                 clearAll();
               }}
               className="text-xs text-red-500 hover:text-red-600 font-medium"
+              aria-label="Clear all files"
             >
               Clear all
             </button>
@@ -187,6 +197,7 @@ export function Dropzone({
                   removeFile(index);
                 }}
                 className="p-1.5 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                aria-label={`Remove ${file.name}`}
               >
                 <X className="w-4 h-4 text-red-500" />
               </button>
