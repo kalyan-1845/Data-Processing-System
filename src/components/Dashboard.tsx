@@ -42,14 +42,22 @@ export function Dashboard({ onSelectModule }: DashboardProps) {
           className="text-6xl lg:text-8xl font-black font-outfit tracking-tighter text-slate-800 dark:text-white leading-[0.95]"
         >
           Your Data, <br className="hidden sm:block" />
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent via-purple-500 to-accent bg-[length:200%_auto] animate-gradient">Intelligently Refined.</span>
+          <span 
+            className="bg-clip-text text-transparent animate-gradient"
+            style={{ 
+              backgroundImage: 'linear-gradient(90deg, #a78bfa, #c084fc, #e879f9, #c084fc, #a78bfa)', 
+              backgroundSize: '200% auto' 
+            }}
+          >
+            Intelligently Refined.
+          </span>
         </motion.h1>
         
         <motion.p 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-          className="text-slate-500 dark:text-white/40 max-w-3xl mx-auto text-lg lg:text-2xl font-bold leading-relaxed px-4"
+          className="text-slate-500 dark:text-white/70 max-w-3xl mx-auto text-lg lg:text-2xl font-bold leading-relaxed px-4"
         >
           DocuShrink orchestrates neural AI architectures to transform, <br className="hidden lg:block" /> 
           compact, and extract intelligence from your documents seamlessly.
@@ -79,7 +87,7 @@ export function Dashboard({ onSelectModule }: DashboardProps) {
             <h3 className="font-outfit font-black text-slate-800 dark:text-white text-xl mb-3 relative z-10 tracking-tight leading-none">
               {tool.label}
             </h3>
-            <p className="text-slate-500 dark:text-white/30 text-xs font-bold uppercase tracking-tight relative z-10 leading-relaxed mb-8">
+            <p className="text-slate-500 dark:text-white/50 text-xs font-bold uppercase tracking-tight relative z-10 leading-relaxed mb-8">
               {tool.desc}
             </p>
             
