@@ -559,16 +559,7 @@ export function App() {
           </motion.div>
         )}
       </AnimatePresence>
-      <AnimatePresence>
-        {entered && (
-          <motion.div
-            initial={{ clipPath: 'inset(50% 0 50% 0)', opacity: 0 }}
-            animate={{ clipPath: 'inset(0% 0 0% 0)', opacity: 1 }}
-            transition={{ duration: 1.2, ease: [0.7, 0, 0.3, 1] }}
-            className="fixed inset-0 z-0 bg-black pointer-events-none"
-          />
-        )}
-      </AnimatePresence>
+
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 30 }}
         animate={{ 

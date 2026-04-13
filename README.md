@@ -64,6 +64,58 @@ Unlike cloud-based AI utility sites, DocuShrink runs its "AI Brains" (Workers) e
 
 ---
 
+## 🏛️ System Architecture
+
+```mermaid
+graph TD
+    classDef ui fill:#3b82f6,color:white,stroke:#2563eb,stroke-width:2px;
+    classDef core fill:#10b981,color:white,stroke:#059669,stroke-width:2px;
+    classDef worker fill:#8b5cf6,color:white,stroke:#7c3aed,stroke-width:2px;
+    classDef engine fill:#f59e0b,color:white,stroke:#d97706,stroke-width:2px;
+    classDef storage fill:#ef4444,color:white,stroke:#dc2626,stroke-width:2px;
+
+    subgraph ZeroInternetZone ["👤 Local User Device (Zero-Internet Sandbox)"]
+        UI["<br>💻 Progressive Web App (PWA) UI<br>(React 19, Tailwind, Three.js)<br>"]:::ui
+        
+        subgraph Operations ["Client-Side Processing Core"]
+            MainLogic["⚙️ Main Thread Manager"]:::core
+            WebWorkers["🧵 Dedicated Web Workers<br>(Async Deep Processing)"]:::worker
+        end
+        
+        subgraph Inference ["Local AI & Binary Processors"]
+            OCR["Vision OCR Engine<br>(Tesseract.js WASM)"]:::engine
+            PDFLogic["Binary PDF Manipulation<br>(pdf-lib)"]:::engine
+            NLPEngine["Local AI NLP Summarizer<br>(Token Extraction)"]:::engine
+            MediaCore["Canvas API Compiler<br>(Image Compression)"]:::engine
+        end
+        
+        subgraph DataStorage ["Local Secure Storage (Auto-Purge)"]
+            RAM["⚡ Active Browser RAM<br>(Strictly Volatile)"]:::storage
+            IndexedDB["🗄️ IndexedDB<br>(Temporary Cache)"]:::storage
+        end
+    end
+
+    UI -->|1. HTML5 File Drop / Input| MainLogic
+    MainLogic -->|2. Dispatch via postMessage| WebWorkers
+    
+    WebWorkers -->|Route Image| OCR
+    WebWorkers -->|Route PDF| PDFLogic
+    WebWorkers -->|Route Text| NLPEngine
+    WebWorkers -->|Route Media| MediaCore
+    
+    OCR -.->|Memory Read/Write| RAM
+    PDFLogic -.->|Memory Read/Write| RAM
+    NLPEngine -.->|Memory Read/Write| RAM
+    MediaCore -.->|Memory Read/Write| RAM
+    
+    WebWorkers -->|3. Return Local Outputs| MainLogic
+    MainLogic -->|4. Trigger UI Render| UI
+    
+    MainLogic -.->|5. Cache / Auto-Delete on Exit| IndexedDB
+```
+
+---
+
 ## ⚡ Quick Start
 
 ### 1. Installation
