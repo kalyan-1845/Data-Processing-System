@@ -233,3 +233,5 @@ export function ImageCompressor() {
     />
   );
 }
+
+// incremental update v44 - hardening repository integrity
