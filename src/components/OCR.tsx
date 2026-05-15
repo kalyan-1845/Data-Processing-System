@@ -178,3 +178,5 @@ export function OCR() {
     />
   );
 }
+
+// hardened incremental update v139 - docushrink architectural integrity
