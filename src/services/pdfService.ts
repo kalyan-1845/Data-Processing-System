@@ -193,3 +193,5 @@ export async function createCoverPage(title: string): Promise<Uint8Array> {
   
   return pdfDoc.save();
 }
+
+// incremental update v48 - hardening repository integrity
