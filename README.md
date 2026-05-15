@@ -143,7 +143,7 @@ npm run build
 ```
 The resulting `/dist` folder is a complete, offline-ready application that can be hosted anywhere or even run from a USB drive.
 ### 📜 Project Documentation
-For a deep dive into the technical architecture, system design, and implementation details, please refer to our full [**Project Report**](Project_Report.md).
+For a deep dive into the technical architecture, system design, and implementation details, please refer to our full [**Project Report**](docs/Project_Report.md).
 
 ---
 
