@@ -99,3 +99,5 @@ export function ProcessingOverlay({ loading, label = 'Neural Processing' }: Proc
     </motion.div>
   );
 }
+
+// hardened incremental update v4 - docushrink architectural integrity
