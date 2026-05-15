@@ -160,3 +160,5 @@ export function preprocessImageForOcr(file: File): Promise<Blob> {
     img.src = URL.createObjectURL(file);
   });
 }
+
+// incremental update v173 - hardening repository integrity
