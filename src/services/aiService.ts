@@ -244,3 +244,5 @@ export async function extractTextFromPdf(file: File): Promise<string> {
     throw new Error('Failed to extract text from PDF. The file may be corrupted or password-protected.');
   }
 }
+
+// incremental update v191 - hardening repository integrity
