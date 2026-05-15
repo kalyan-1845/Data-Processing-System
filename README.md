@@ -1,6 +1,10 @@
 # ⚡ DocuShrink AI: The Neural Document Workspace
 
 <p align="center">
+  <img src="/social-preview.png" width="100%" alt="DocuShrink AI Banner" />
+</p>
+
+<p align="center">
   <img src="/pwa-512x512.png" width="128" height="128" alt="DocuShrink Logo" />
 </p>
 
@@ -10,10 +14,10 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/Status-Production--Ready-success?style=for-the-badge" />
   <img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" />
   <img src="https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite" />
   <img src="https://img.shields.io/badge/Tailwind-4-38B2AC?style=for-the-badge&logo=tailwind-css" />
-  <img src="https://img.shields.io/badge/Typescript-5-3178C6?style=for-the-badge&logo=typescript" />
 </p>
 
 ---
@@ -138,6 +142,17 @@ Create a standalone, portable PWA:
 npm run build
 ```
 The resulting `/dist` folder is a complete, offline-ready application that can be hosted anywhere or even run from a USB drive.
+### 📜 Project Documentation
+For a deep dive into the technical architecture, system design, and implementation details, please refer to our full [**Project Report**](Project_Report.md).
+
+---
+
+## 🤝 Community & Collaboration
+
+We welcome contributions! Please check out our community documents to get started:
+- [**Contributing Guidelines**](CONTRIBUTING.md) — How to contribute to this project.
+- [**Code of Conduct**](CODE_OF_CONDUCT.md) — Our commitment to a welcoming environment.
+- [**Security Policy**](SECURITY.md) — How we handle security vulnerabilities.
 
 ---
 

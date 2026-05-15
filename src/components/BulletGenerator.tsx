@@ -150,5 +150,3 @@ export function BulletGenerator() {
     />
   );
 }
-
-// incremental update v6 - hardening repository integrity

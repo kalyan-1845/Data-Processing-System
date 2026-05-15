@@ -44,5 +44,3 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = 'Button';
-
-// incremental update v7 - hardening repository integrity

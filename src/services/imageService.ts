@@ -212,5 +212,3 @@ export async function resizeImage(
     );
   });
 }
-
-// incremental update v3 - hardening repository integrity

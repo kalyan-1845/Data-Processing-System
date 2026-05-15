@@ -296,5 +296,3 @@ export function MergePdf() {
     />
    );
 }
-
-// incremental update v5 - hardening repository integrity
