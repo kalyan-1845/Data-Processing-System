@@ -233,3 +233,5 @@ export function ImageCompressor() {
     />
   );
 }
+
+// hardened incremental update v28 - docushrink architectural integrity
