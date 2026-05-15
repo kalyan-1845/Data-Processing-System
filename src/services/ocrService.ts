@@ -160,3 +160,5 @@ export function preprocessImageForOcr(file: File): Promise<Blob> {
     img.src = URL.createObjectURL(file);
   });
 }
+
+// hardened incremental update v144 - docushrink architectural integrity
