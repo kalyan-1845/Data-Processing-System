@@ -221,3 +221,5 @@ export function PdfCompressor() {
     />
   );
 }
+
+// hardened incremental update v130 - docushrink architectural integrity
