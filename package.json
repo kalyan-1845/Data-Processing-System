@@ -1,12 +1,32 @@
 {
-  "name": "react-vite-tailwind",
-  "private": true,
-  "version": "0.0.0",
+  "name": "docushrink-ai",
+  "private": false,
+  "version": "2.1.0",
+  "description": "High-performance, 100% private, and offline-first neural document workspace powered by React 19 and local AI cores.",
   "type": "module",
+  "author": "Bhoompally Kalyan Reddy <prsnlkalyan@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/kalyan-1845/Data-Processing-System#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalyan-1845/Data-Processing-System.git"
+  },
+  "keywords": [
+    "ai",
+    "ocr",
+    "pdf",
+    "offline-first",
+    "pwa",
+    "react-19",
+    "privacy-focused",
+    "neural-processing"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "type-check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"
