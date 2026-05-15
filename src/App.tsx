@@ -79,7 +79,7 @@ const categoryColors: Record<string, string> = {
 
 function Pencil3D() {
   const meshRef = useRef<THREE.Group>(null);
-  
+
   useFrame((state) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += 0.02;
@@ -95,25 +95,25 @@ function Pencil3D() {
         <cylinderGeometry args={[0.2, 0.2, 2.0, 6]} />
         <meshStandardMaterial color="#eab308" roughness={0.3} metalness={0.2} />
       </mesh>
-      
+
       {/* Wood Tip - Conical */}
       <mesh position={[0, -1.25, 0]}>
         <coneGeometry args={[0.2, 0.5, 6]} />
         <meshStandardMaterial color="#fde047" />
       </mesh>
-      
+
       {/* Graphite Lead - Small conical point */}
       <mesh position={[0, -1.5, 0]}>
         <coneGeometry args={[0.06, 0.12, 6]} />
         <meshStandardMaterial color="#1e293b" />
       </mesh>
-      
+
       {/* Eraser - Pink top */}
       <mesh position={[0, 1.15, 0]}>
         <cylinderGeometry args={[0.2, 0.2, 0.3, 12]} />
         <meshStandardMaterial color="#f472b6" roughness={0.5} />
       </mesh>
-      
+
       {/* Metal Ferrule - Silver connector */}
       <mesh position={[0, 0.9, 0]}>
         <cylinderGeometry args={[0.21, 0.21, 0.2, 12]} />
@@ -143,7 +143,7 @@ function NeuralMonitor() {
         {bars.map((bar: { id: number, del: number, dur: number }) => (
           <motion.div
             key={bar.id}
-            animate={{ 
+            animate={{
               height: ["30%", "80%", "30%", "60%", "30%"]
             }}
             transition={{ duration: bar.dur, repeat: Infinity, ease: "easeInOut", delay: bar.del }}
@@ -185,7 +185,7 @@ function MagneticBackground() {
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
-            transform: `translate(${(mouse.x - window.innerWidth/2) * p.off}px, ${(mouse.y - window.innerHeight/2) * p.off}px)`
+            transform: `translate(${(mouse.x - window.innerWidth / 2) * p.off}px, ${(mouse.y - window.innerHeight / 2) * p.off}px)`
           }}
         />
       ))}
@@ -201,7 +201,7 @@ function TechnicalHUD({ module }: { module: string }) {
       `NEURAL_LINK_ESTABLISHED`,
       `DATA_ENCRYPTION_ACTIVE`,
       `LOCAL_SECURE_V2.4`,
-      `LOAD_BUFFER_0x${Math.random().toString(16).slice(2,6)}`
+      `LOAD_BUFFER_0x${Math.random().toString(16).slice(2, 6)}`
     ];
     let i = 0;
     const interval = setInterval(() => {
@@ -215,7 +215,7 @@ function TechnicalHUD({ module }: { module: string }) {
     <div className="fixed bottom-10 right-10 z-50 pointer-events-none opacity-20 hidden lg:block">
       <div className="font-mono text-[9px] text-white flex flex-col gap-1 items-end">
         {logs.map((log, idx) => (
-          <motion.span 
+          <motion.span
             key={`${log}-${idx}`}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -252,17 +252,17 @@ function AppContent() {
   useEffect(() => {
     try {
       localStorage.setItem('docushrink-module', activeModule);
-    } catch(e) {}
+    } catch (e) { }
   }, [activeModule]);
 
   useEffect(() => {
     const root = document.documentElement;
     if (darkMode) {
       root.classList.add('dark');
-      try { localStorage.setItem('docushrink-theme', 'dark'); } catch(e) {}
+      try { localStorage.setItem('docushrink-theme', 'dark'); } catch (e) { }
     } else {
       root.classList.remove('dark');
-      try { localStorage.setItem('docushrink-theme', 'light'); } catch(e) {}
+      try { localStorage.setItem('docushrink-theme', 'light'); } catch (e) { }
     }
   }, [darkMode]);
 
@@ -343,11 +343,11 @@ function AppContent() {
     <div className="relative min-h-screen bg-slate-50 dark:bg-[#020202] transition-colors duration-1000 lg:overflow-hidden">
       <MagneticBackground />
       <TechnicalHUD module={activeModule} />
-      
+
       {/* Mobile Backdrop Overlay - High Priority */}
       <AnimatePresence>
         {sidebarOpen && (
-            <motion.div
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -360,7 +360,7 @@ function AppContent() {
       {/* Mobile Header - Elevated to Top Level Level Stacking */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-[1000] bg-black/80 backdrop-blur-2xl border-b border-white/10 safe-top">
         <div className="flex items-center justify-between p-4 px-5">
-          <button 
+          <button
             onPointerDown={(e) => { e.stopPropagation(); setSidebarOpen(true); }}
             onClick={(e) => { e.stopPropagation(); setSidebarOpen(true); }}
             className="p-4 -m-3 hover:bg-white/5 active:bg-white/10 rounded-2xl transition-all touch-manipulation relative z-[1001] flex items-center justify-center cursor-pointer"
@@ -375,8 +375,8 @@ function AppContent() {
             </div>
             <span className="font-bold font-outfit text-xl text-white tracking-[-0.03em]">DocuShrink</span>
           </div>
-          <button 
-            onClick={(e) => { e.stopPropagation(); toggleDarkMode(); }} 
+          <button
+            onClick={(e) => { e.stopPropagation(); toggleDarkMode(); }}
             className="p-4 -m-3 hover:bg-white/5 active:bg-white/10 rounded-2xl transition-all touch-manipulation flex items-center justify-center cursor-pointer relative z-[1001]"
             aria-label="Toggle Theme"
           >
@@ -441,9 +441,9 @@ function AppContent() {
                   >
                     {activeModule === item.id && (
                       <div className="absolute inset-0 z-0">
-                        <motion.div 
-                          layoutId="activeNav" 
-                          className="absolute inset-0 bg-accent rounded-xl shadow-accent border border-white/10" 
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute inset-0 bg-accent rounded-xl shadow-accent border border-white/10"
                         />
                         <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-12 h-12 pointer-events-none hidden lg:block">
                           <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
@@ -475,9 +475,9 @@ function AppContent() {
                   >
                     {activeModule === item.id && (
                       <div className="absolute inset-0 z-0">
-                        <motion.div 
-                          layoutId="activeNav" 
-                          className="absolute inset-0 bg-accent rounded-xl shadow-accent border border-white/10" 
+                        <motion.div
+                          layoutId="activeNav"
+                          className="absolute inset-0 bg-accent rounded-xl shadow-accent border border-white/10"
                         />
                         <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-12 h-12 pointer-events-none hidden lg:block">
                           <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
@@ -497,7 +497,7 @@ function AppContent() {
           </nav>
 
           <div className="p-4 border-t border-white/5 space-y-3">
-            <button 
+            <button
               onClick={(e) => { e.stopPropagation(); toggleDarkMode(); }}
               aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
               className="w-full flex items-center justify-between px-4 py-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-all touch-manipulation cursor-pointer"
@@ -535,7 +535,7 @@ export function App() {
 
   const handleEntranceComplete = () => {
     setEntered(true);
-    try { sessionStorage.setItem('docushrink-entered', 'true'); } catch(_e) {/* */}
+    try { sessionStorage.setItem('docushrink-entered', 'true'); } catch (_e) {/* */ }
   };
 
   return (
@@ -550,8 +550,8 @@ export function App() {
             transition={{ duration: 1.5, ease: 'easeIn' }}
             className="fixed inset-0 z-[100] bg-black"
           >
-            <Entrance 
-              onComplete={handleEntranceComplete} 
+            <Entrance
+              onComplete={handleEntranceComplete}
               onPhaseChange={setPhase}
               onHoverChange={setIsHovered}
             />
@@ -562,8 +562,8 @@ export function App() {
 
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 30 }}
-        animate={{ 
-          opacity: entered ? 1 : 0, 
+        animate={{
+          opacity: entered ? 1 : 0,
           scale: entered ? 1 : 0.9,
           y: entered ? 0 : 30
         }}
@@ -574,105 +574,3 @@ export function App() {
     </ToastProvider>
   );
 }
-
-// version control incremental update 30
-
-// version control incremental update 31
-
-// version control incremental update 32
-
-// version control incremental update 33
-
-// version control incremental update 34
-
-// version control incremental update 35
-
-// version control incremental update 36
-
-// version control incremental update 37
-
-// version control incremental update 38
-
-// version control incremental update 39
-
-// version control incremental update 40
-
-// version control incremental update 41
-
-// version control incremental update 42
-
-// version control incremental update 43
-
-// version control incremental update 44
-
-// version control incremental update 45
-
-// version control incremental update 46
-
-// version control incremental update 47
-
-// version control incremental update 48
-
-// version control incremental update 49
-
-// version control incremental update 50
-
-// version control incremental update 51
-
-// version control incremental update 52
-
-// version control incremental update 53
-
-// version control incremental update 54
-
-// version control incremental update 55
-
-// version control incremental update 56
-
-// version control incremental update 57
-
-// version control incremental update 58
-
-// version control incremental update 59
-
-// version control incremental update 60
-
-// version control incremental update 61
-
-// version control incremental update 62
-
-// version control incremental update 63
-
-// version control incremental update 64
-
-// version control incremental update 65
-
-// version control incremental update 66
-
-// version control incremental update 67
-
-// version control incremental update 68
-
-// version control incremental update 69
-
-// version control incremental update 70
-
-// version control incremental update 71
-
-// version control incremental update 72
-
-// version control incremental update 73
-
-// version control incremental update 74
-
-// version control incremental update 75
-
-// version control incremental update 76
-
-// version control incremental update 77
-
-// version control incremental update 78
-
-// version control incremental update 79
-
-// version control incremental update 80

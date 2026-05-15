@@ -141,6 +141,15 @@ The resulting `/dist` folder is a complete, offline-ready application that can b
 
 ---
 
+## 🤝 Community & Collaboration
+
+We welcome contributions! Please check out our community documents to get started:
+- [**Contributing Guidelines**](CONTRIBUTING.md) — How to contribute to this project.
+- [**Code of Conduct**](CODE_OF_CONDUCT.md) — Our commitment to a welcoming environment.
+- [**Security Policy**](SECURITY.md) — How we handle security vulnerabilities.
+
+---
+
 ## 👥 The Neural Core Team
 
 - **Bhoompally Kalyan Reddy** — [LinkedIn](https://www.linkedin.com/in/bhoompally-kalyanreddy/) | *Lead Architecture & PWA Strategy*
