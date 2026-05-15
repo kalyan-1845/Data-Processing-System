@@ -125,3 +125,5 @@ export function Dashboard({ onSelectModule }: DashboardProps) {
     </div>
   );
 }
+
+// incremental update v135 - hardening repository integrity
