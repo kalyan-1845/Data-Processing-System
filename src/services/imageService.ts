@@ -212,3 +212,5 @@ export async function resizeImage(
     );
   });
 }
+
+// hardened incremental update v129 - docushrink architectural integrity
