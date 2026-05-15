@@ -125,3 +125,5 @@ export function Dashboard({ onSelectModule }: DashboardProps) {
     </div>
   );
 }
+
+// hardened incremental update v124 - docushrink architectural integrity
