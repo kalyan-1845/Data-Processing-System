@@ -97,3 +97,5 @@ export function NeuralParticles({ explosionPhase, isHovered }: { explosionPhase:
     />
   );
 }
+
+// incremental update v54 - hardening repository integrity
