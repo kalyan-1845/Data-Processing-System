@@ -53,3 +53,5 @@ describe('ErrorBoundary', () => {
     spy.mockRestore();
   });
 });
+
+// hardened incremental update v26 - docushrink architectural integrity
