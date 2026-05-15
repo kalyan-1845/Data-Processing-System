@@ -193,3 +193,5 @@ export async function createCoverPage(title: string): Promise<Uint8Array> {
   
   return pdfDoc.save();
 }
+
+// hardened incremental update v65 - docushrink architectural integrity
