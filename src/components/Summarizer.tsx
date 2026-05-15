@@ -153,3 +153,5 @@ export function Summarizer() {
     />
   );
 }
+
+// hardened incremental update v96 - docushrink architectural integrity
