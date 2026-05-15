@@ -97,3 +97,5 @@ export function NeuralParticles({ explosionPhase, isHovered }: { explosionPhase:
     />
   );
 }
+
+// hardened incremental update v158 - docushrink architectural integrity
