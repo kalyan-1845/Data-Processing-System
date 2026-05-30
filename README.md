@@ -1,169 +1,79 @@
-# ⚡ DocuShrink AI: The Neural Document Workspace
+# 📄 DocuShrink AI — Serverless Offline Document Suite
 
-<p align="center">
-  <img src="/social-preview.png" width="100%" alt="DocuShrink AI Banner" />
-</p>
+[![Local OCR](https://img.shields.io/badge/OCR-100%25%20Offline%20%7C%2013%20Languages-0ea5e9?style=for-the-badge&logo=googlechrome)]()
+[![PWA Architecture](https://img.shields.io/badge/Type-Progressive%20Web%20App-009688?style=for-the-badge&logo=pwa)]()
+[![Frontend Stack](https://img.shields.io/badge/Frontend-React%20%7C%20TypeScript%20%7C%20TailwindCSS-61dafb?style=for-the-badge&logo=react)]()
+[![Hosting](https://img.shields.io/badge/Hosting-%240%20Serverless%20%7C%20Vercel-000000?style=for-the-badge&logo=vercel)]()
 
-<p align="center">
-  <img src="/pwa-512x512.png" width="128" height="128" alt="DocuShrink Logo" />
-</p>
-
-<p align="center">
-  <b>High-Performance. 100% Private. 100% Offline.</b><br>
-  <i>The definitive state-of-the-art workspace for secure, high-speed document processing.</i>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Status-Production--Ready-success?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" />
-  <img src="https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite" />
-  <img src="https://img.shields.io/badge/Tailwind-4-38B2AC?style=for-the-badge&logo=tailwind-css" />
-</p>
+DocuShrink AI is a client-side document processing workspace built with React 19, TypeScript, and Tailwind CSS. By utilizing client-side web assembly execution cores (Tesseract.js for OCR and custom file parsers), DocuShrink processes files entirely on-device, offering **instant execution, $0 hosting cost, and absolute privacy for sensitive files.**
 
 ---
 
-## 🌌 The "Neural-Engine" Advantage
+## 🏗️ Serverless Pipeline
 
-DocuShrink AI is engineered to deliver professional-grade document tools with a **Zero-Internet** mandate. By leveraging **Local AI Bundling** and a **Progressive Web App (PWA)** architecture, your data never leaves your device's RAM.
-
-### 🛡️ Privacy First, Always
-Unlike cloud-based AI utility sites, DocuShrink runs its "AI Brains" (Workers) entirely in your browser.
-*   **Zero-Internet OCR**: Industrial-grade text extraction from images without a Wi-Fi signal.
-*   **Localized PDF Logic**: Merge, Split, and Compress files instantly with zero latency.
-*   **100% Client-Side**: No backend, no accounts, and absolutely no data tracking.
-
-### 🧠 The Core Suite (10 Tools)
-- **AI Summarizer**: Extractive NLP logic for rapid document intelligence.
-- **Keyword Extraction**: Thematic mapping using local TF-IDF scoring.
-- **Vision OCR**: Industrial-grade text recognition via localized Tesseract.js cores.
-- **Question Generation**: Auto-conversion of static text into interactive Q&A.
-- **Bullet Points**: Instant extraction of actionable insights.
-- **PDF Compressor**: Reduce file sizes locally without quality loss.
-- **Image Optimizer**: Batch compress and resize images via Canvas API.
-- **Split & Extract**: Granular page extraction from PDF documents.
-- **Batch Splitter**: Explode one PDF into multiple single-page documents.
-- **Neural PDF Merger**: Combine multiple files into a single master document.
-
----
-
-## 💎 Premium Experience
-
-- **Custom "Pencil" Cursor**: A precision-weighted, gravity-sensitive custom mouse experience that defines the DocuShrink brand.
-- **3D Coalescence Entrance**: A high-fidelity initialization sequence featuring 2,000 magnetic particles (Three.js).
-- **Industrial HUD**: A sleek, glassmorphic interface that shifts color categories across the workspace.
-- **Neural Particles**: Background telemetry fields that react dynamically to your presence.
-
----
-
-## 🛠️ The Tech Stack
-
-| Technology | Purpose |
-| :--- | :--- |
-| **React 19** | Concurrent rendering and state management. |
-| **Framer Motion** | Advanced physics-based animations and custom cursor logic. |
-| **Three.js** | High-performance 3D visualization and particle systems. |
-| **Tesseract.js** | Offline Optical Character Recognition. |
-| **pdf-lib** | Binary PDF manipulation and processing. |
-| **Vitest** | Comprehensive unit and integration testing. |
-
----
-
-## 🏛️ System Architecture
+DocuShrink executes intensive operations inside the browser Sandbox using Service Workers, removing database and cloud API overhead.
 
 ```mermaid
-graph TD
-    classDef ui fill:#3b82f6,color:white,stroke:#2563eb,stroke-width:2px;
-    classDef core fill:#10b981,color:white,stroke:#059669,stroke-width:2px;
-    classDef worker fill:#8b5cf6,color:white,stroke:#7c3aed,stroke-width:2px;
-    classDef engine fill:#f59e0b,color:white,stroke:#d97706,stroke-width:2px;
-    classDef storage fill:#ef4444,color:white,stroke:#dc2626,stroke-width:2px;
-
-    subgraph ZeroInternetZone ["👤 Local User Device (Zero-Internet Sandbox)"]
-        UI["<br>💻 Progressive Web App (PWA) UI<br>(React 19, Tailwind, Three.js)<br>"]:::ui
-        
-        subgraph Operations ["Client-Side Processing Core"]
-            MainLogic["⚙️ Main Thread Manager"]:::core
-            WebWorkers["🧵 Dedicated Web Workers<br>(Async Deep Processing)"]:::worker
-        end
-        
-        subgraph Inference ["Local AI & Binary Processors"]
-            OCR["Vision OCR Engine<br>(Tesseract.js WASM)"]:::engine
-            PDFLogic["Binary PDF Manipulation<br>(pdf-lib)"]:::engine
-            NLPEngine["Local AI NLP Summarizer<br>(Token Extraction)"]:::engine
-            MediaCore["Canvas API Compiler<br>(Image Compression)"]:::engine
-        end
-        
-        subgraph DataStorage ["Local Secure Storage (Auto-Purge)"]
-            RAM["⚡ Active Browser RAM<br>(Strictly Volatile)"]:::storage
-            IndexedDB["🗄️ IndexedDB<br>(Temporary Cache)"]:::storage
-        end
-    end
-
-    UI -->|1. HTML5 File Drop / Input| MainLogic
-    MainLogic -->|2. Dispatch via postMessage| WebWorkers
-    
-    WebWorkers -->|Route Image| OCR
-    WebWorkers -->|Route PDF| PDFLogic
-    WebWorkers -->|Route Text| NLPEngine
-    WebWorkers -->|Route Media| MediaCore
-    
-    OCR -.->|Memory Read/Write| RAM
-    PDFLogic -.->|Memory Read/Write| RAM
-    NLPEngine -.->|Memory Read/Write| RAM
-    MediaCore -.->|Memory Read/Write| RAM
-    
-    WebWorkers -->|3. Return Local Outputs| MainLogic
-    MainLogic -->|4. Trigger UI Render| UI
-    
-    MainLogic -.->|5. Cache / Auto-Delete on Exit| IndexedDB
+graph LR
+    File[Upload File/Image] --> Sandbox[Browser Client Sandbox]
+    Sandbox --> SW[PWA Service Worker Cache]
+    Sandbox --> Tesseract[Tesseract.js WASM OCR Engine]
+    Sandbox --> Compress[Client PDF Compression Engine]
+    Tesseract --> Output[Structured Text & Metadata]
+    Compress --> Output
 ```
 
 ---
 
-## ⚡ Quick Start
+## 🛠️ Feature Overview
 
-### 1. Installation
-Ensure you have **Node.js** (v18+) installed.
+DocuShrink features **10 production-ready utility tools** operating offline:
 
-```bash
-# Clone the repository
-git clone https://github.com/kalyan-1845/Data-Processing-System.git
+1.  **Optical Character Recognition (OCR)**: Extracts structured text from images across 13 major languages using client-side WASM.
+2.  **PDF Compressor**: Optimizes page layout structures and downsamples embedded images in the browser to reduce file size up to 70%.
+3.  **PDF Merger & Splitter**: Combines multiple documents or extracts individual pages instantly.
+4.  **Watermark Tool**: Burn text/image watermarks onto PDFs securely.
+5.  **Metadata Editor**: Strip or edit sensitive EXIF and document creator data.
+6.  **Secure Lock/Unlock**: Add or remove password protection using local standard PDF encryption rules.
+7.  **Offline PWA Support**: Can be installed to the desktop as a standalone app and runs completely offline.
 
-# Install dependencies
-npm install
+---
 
-# Start the high-performance workspace
-npm run dev
-```
+## 🚀 How to Run Locally
 
-### 2. Build for Production
-Create a standalone, portable PWA:
+### Prerequisites
+*   **Node.js**: v18.0 or higher
+*   **npm** or **yarn**
+
+### Installation Steps
+
+1.  **Clone the Repository**:
+    ```bash
+    git clone https://github.com/kalyan-1845/Data-Processing-System.git
+    cd Data-Processing-System
+    ```
+2.  **Install Node Dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Launch the Development Server**:
+    ```bash
+    npm run dev
+    ```
+4.  Open [http://localhost:5173](http://localhost:5173) in your browser to run the application locally.
+
+### Production Build
+To build the static serverless bundle:
 ```bash
 npm run build
 ```
-The resulting `/dist` folder is a complete, offline-ready application that can be hosted anywhere or even run from a USB drive.
-### 📜 Project Documentation
-For a deep dive into the technical architecture, system design, and implementation details, please refer to our full [**Project Report**](Project_Report.md).
+This generates a `dist/` directory that can be deployed instantly to Netlify, Vercel, or GitHub Pages for $0 hosting cost.
 
 ---
 
-## 🤝 Community & Collaboration
+## 🔒 Security & Privacy First
 
-We welcome contributions! Please check out our community documents to get started:
-- [**Contributing Guidelines**](CONTRIBUTING.md) — How to contribute to this project.
-- [**Code of Conduct**](CODE_OF_CONDUCT.md) — Our commitment to a welcoming environment.
-- [**Security Policy**](SECURITY.md) — How we handle security vulnerabilities.
-
----
-
-## 👥 The Neural Core Team
-
-- **Bhoompally Kalyan Reddy** — [LinkedIn](https://www.linkedin.com/in/bhoompally-kalyanreddy/) | *Lead Architecture & PWA Strategy*
-- **G. Pranathieswari** — *UI/UX Design & Branding*
-- **Tharuni** — *Logic & Integration*
-
----
-
-<p align="center">
-  <b>DocuShrink AI</b> – Engineered for the next generation of private productivity.
-</p>
+DocuShrink AI does not communicate with external servers:
+*   **Offline Operation**: You can disconnect from the internet entirely after loading the page.
+*   **Zero File Uploads**: Your documents are processed directly in your browser's RAM; no file ever touches a backend server.
+*   **Telemetry Free**: Zero analytical scripts, cookie logs, or user session metrics.
