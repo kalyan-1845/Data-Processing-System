@@ -252,17 +252,17 @@ function AppContent() {
   useEffect(() => {
     try {
       localStorage.setItem('docushrink-module', activeModule);
-    } catch (e) { }
+    } catch (e) { /* ignore */ }
   }, [activeModule]);
 
   useEffect(() => {
     const root = document.documentElement;
     if (darkMode) {
       root.classList.add('dark');
-      try { localStorage.setItem('docushrink-theme', 'dark'); } catch (e) { }
+      try { localStorage.setItem('docushrink-theme', 'dark'); } catch (e) { /* ignore */ }
     } else {
       root.classList.remove('dark');
-      try { localStorage.setItem('docushrink-theme', 'light'); } catch (e) { }
+      try { localStorage.setItem('docushrink-theme', 'light'); } catch (e) { /* ignore */ }
     }
   }, [darkMode]);
 
