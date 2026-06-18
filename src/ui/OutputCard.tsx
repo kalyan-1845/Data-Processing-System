@@ -27,12 +27,44 @@ export function OutputCard({
   const [copied, setCopied] = useState(false);
   const { showToast } = useToast();
 
-  const handleCopy = () => {
-    if (typeof content === 'string') {
-      navigator.clipboard.writeText(content);
+  const handleCopy = async () => {
+    if (typeof content !== 'string') return;
+
+    const success = () => {
       setCopied(true);
       showToast('success', 'Copied to clipboard');
       setTimeout(() => setCopied(false), 2000);
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(content);
+        success();
+      } catch (err) {
+        showToast('error', 'Failed to copy using clipboard API');
+      }
+    } else {
+      // Fallback for non-secure contexts (HTTP)
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = content;
+        // Move outside screen to make it invisible
+        textArea.style.position = 'absolute';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        if (successful) {
+          success();
+        } else {
+          showToast('error', 'Browser blocked copying');
+        }
+      } catch (err) {
+        showToast('error', 'Failed to copy text');
+      }
     }
   };
 

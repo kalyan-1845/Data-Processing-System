@@ -73,7 +73,7 @@ export function OCR() {
             <Dropzone
               accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp'] }}
               onFilesChange={handleFilesChange}
-              label="Drop image here"
+              label="Drop image here or Ctrl+V to paste"
               icon="image"
             />
           </div>

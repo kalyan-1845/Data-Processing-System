@@ -18,7 +18,7 @@ export function Dropzone({
   multiple = false,
   maxFiles = 10,
   onFilesChange,
-  label = 'Drop files here or click to upload',
+  label = 'Drop files here, click, or Ctrl+V to paste',
   icon = 'pdf',
   value,
 }: DropzoneProps) {
@@ -72,6 +72,22 @@ export function Dropzone({
     e.preventDefault();
     setIsDragActive(false);
   }, []);
+
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      if (e.clipboardData && e.clipboardData.files.length > 0) {
+        handleFiles(e.clipboardData.files);
+      }
+    };
+    
+    window.addEventListener('paste', handlePaste as EventListener);
+    return () => {
+      window.removeEventListener('paste', handlePaste as EventListener);
+    };
+  }, [handleFiles]);
 
   const handleClick = () => {
     const input = document.createElement('input');

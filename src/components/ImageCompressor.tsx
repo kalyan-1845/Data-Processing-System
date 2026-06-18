@@ -101,7 +101,7 @@ export function ImageCompressor() {
             <Dropzone
               accept={{ 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] }}
               onFilesChange={handleFilesChange}
-              label="Drop image here"
+              label="Drop image here or Ctrl+V to paste"
               icon="image"
             />
           </div>
